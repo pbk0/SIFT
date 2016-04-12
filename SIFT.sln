@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{34163502-C702-4980-8E34-BF816A7911CA}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		SET_ENV.bat = SET_ENV.bat
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MasterProjectPart1", "MasterProjectPart1\MasterProjectPart1.vcxproj", "{340671BC-0B67-4FFC-9F0A-7E6555C36F91}"
