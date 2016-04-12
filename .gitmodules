@@ -1,0 +1,3 @@
+[submodule "CudaSift"]
+	path = CudaSift
+	url = https://github.com/Celebrandil/CudaSift.git
