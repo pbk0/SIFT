@@ -1,3 +1,0 @@
-[submodule "vigra"]
-	path = vigra
-	url = https://github.com/ukoethe/vigra.git

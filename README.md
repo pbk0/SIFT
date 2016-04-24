@@ -23,21 +23,20 @@ git submodule update
 + vigra
 
 ```bash
-# git submodule add https://github.com/ukoethe/vigra.git
+# git submodule add https://github.com/praveenneuron/vigra.git
 cd vigra
 mkdir build
 cd build
 cmake ..
 make
 sudo make install
-git submodule add https://github.com/Celebrandil/CudaSift.git
 ```
 
 
 + CudaSift
 
 ```bash
-# git submodule add https://github.com/Celebrandil/CudaSift.git
+# git submodule add https://github.com/praveenneuron/CudaSift.git
 cd CudaSift
 mkdir build
 cd build
