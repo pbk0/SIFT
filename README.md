@@ -18,7 +18,9 @@ git submodule init
 git submodule update
 ```
 
-## already added some external code
+## Compile and run the code
+
+#### Compile and install submodules first
 
 + vigra
 
@@ -45,4 +47,13 @@ make
 #sudo make install
 ```
 
+#### Compile and run our code
 
+```bash
+cd ~/SIFT
+mkdir build
+cd build
+cmake ..
+make
+./SIFT
+```
