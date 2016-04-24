@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/CudaSift" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/opensift" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/vigra" vcs="Git" />
   </component>
 </project>

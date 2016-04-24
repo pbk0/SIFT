@@ -4,3 +4,6 @@
 [submodule "CudaSift"]
 	path = CudaSift
 	url = https://github.com/praveenneuron/CudaSift.git
+[submodule "opensift"]
+	path = opensift
+	url = https://github.com/praveenneuron/opensift.git

@@ -40,12 +40,34 @@ sudo make install
 ```bash
 # git submodule add https://github.com/praveenneuron/CudaSift.git
 cd CudaSift
+make
+./cudasift
+```
+
++ GistSift
+
+  + [link](https://gist.github.com/lxc-xx/7088609#file-sift-cpp)
+
+```bash
+cd ~/SIFT
+mkdir GistSift
+cd GistSift
+wget https://gist.githubusercontent.com/lxc-xx/7088609/raw/a638f0d879fd39f7680c478503217a9e61e05c19/sift.cpp
+
+```
+
++ opensift
+
+```bash
+# git submodule add https://github.com/praveenneuron/opensift.git
+cd opensift
 mkdir build
 cd build
 cmake ..
 make
 ./cudasift
 ```
+
 
 #### Compile and run our code
 
