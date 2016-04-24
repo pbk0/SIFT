@@ -44,7 +44,7 @@ mkdir build
 cd build
 cmake ..
 make
-#sudo make install
+./cudasift
 ```
 
 #### Compile and run our code
