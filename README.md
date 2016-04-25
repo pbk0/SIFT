@@ -25,15 +25,30 @@ git submodule update
 + vigra
 
 ```bash
+sudo apt-get install libjpeg-dev
+sudo apt-get install libtiff4-dev
+sudo apt-get install libtiff5-dev
+sudo apt-get install libpng12-dev
+sudo apt-get install openexr
+sudo apt-get install libfftw3-dev
+```
+```bash
 # git submodule add https://github.com/praveenneuron/vigra.git
 cd vigra
 mkdir build
 cd build
-cmake ..
+ccmake ..
 make
+make check
+make doc
+make examples
 sudo make install
 ```
 
+Note: When you use gcc 4.8.1, make sure to change the optimization
+level to -O2 in the cmake configuration (this is best done in the
+cmake GUI that you get by calling ccmake . before invoking make).
+The -O3 level in that compiler is buggy and leads to crashes.
 
 + CudaSift
 
