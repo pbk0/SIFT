@@ -177,6 +177,15 @@ int sift_vigra(){
 #endif
     //
     cout << "Configure SIFT extractor " << endl;
+    vigra::VigraSiftDescriptor vigraSiftDescriptor;
+    vigraSiftDescriptor.setValues(
+            _nfeatures,
+            _nOctaveLayers,
+            _contrastThreshold,
+            _edgeThreshold,
+            _sigma
+    );
+
     cv::Mat descriptor;
     cv::Ptr<cv::xfeatures2d::SiftDescriptorExtractor> extractor =
             cv::xfeatures2d::SiftDescriptorExtractor::create(
@@ -189,7 +198,7 @@ int sift_vigra(){
 
     //
     cout << "Extract descriptors" << endl;
-    extractor->compute(img, keypoints,descriptor);
+    extractor->compute(img, keypoints, descriptor);
 
     //
     cout << "Results ....." << endl;
