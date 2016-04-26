@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 #include <algorithm>
 
 #define _VIGRA 0
@@ -15,6 +16,8 @@
 
 #if _OPENCV
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/xfeatures2d/nonfree.hpp>
 #endif
 
@@ -28,8 +31,18 @@ int main() {
 
 #if _OPENCV
     cout << "Hello, World! ... Using OpenCV" << endl;
-    string img_name = "img1.png";
-    cv::Mat img = cv::imread(img_name, CV_LOAD_IMAGE_COLOR);
+    cv::Mat img;
+    img = cv::imread("/home/neuron/SIFT/img.pgm", CV_LOAD_IMAGE_COLOR);
+    if(img.empty() )
+    {
+        cout << "Can't read one of the images..."<< endl;
+        return -1;
+    }
+    //cv::namedWindow("Display Image", cv::WINDOW_AUTOSIZE );
+    cv::imshow("Display Image", img);
+
+    cv::waitKey(0);
+
 #endif
 
 
