@@ -24,6 +24,8 @@ class VigraSiftDescriptor
     double contrastThreshold;
     double edgeThreshold;
     double sigma;
+    MultiArray<2, vigra::UInt8> image_array;
+    MultiArray<2, vigra::UInt8> descriptor_array;
 
 
     // default width of descriptor histogram array
@@ -49,6 +51,16 @@ class VigraSiftDescriptor
      * Get the size of descriptor.
      */
     int getDescriptorSize();
+
+    /**
+     * Allocate and initialize image array.
+     */
+    void allocateAndInitializeImage(const char*  file_name);
+
+    /**
+     * Allocate and intialize descriptor array.
+     */
+    void allocateDescriptorArray();
 
 
 };

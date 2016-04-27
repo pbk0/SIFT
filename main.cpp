@@ -86,6 +86,7 @@ int sift_opencv(){
 #endif
     //
     cout << "Configure SIFT extractor " << endl;
+
     cv::Mat descriptor;
     cv::Ptr<cv::xfeatures2d::SiftDescriptorExtractor> extractor =
             cv::xfeatures2d::SiftDescriptorExtractor::create(
@@ -127,7 +128,6 @@ int sift_vigra(){
 
     cout << "read the image" << endl;
 
-#if _OPENCV
     cv::Mat img;
     img = cv::imread("/home/neuron/SIFT/img.pgm", CV_LOAD_IMAGE_GRAYSCALE);
     if(img.empty() )
@@ -135,12 +135,7 @@ int sift_vigra(){
         cout << "Can't read one of the images..."<< endl;
         return -1;
     }
-#endif
 
-    // read also with vigra
-    vigra::ImageImportInfo vigra_img_info("/home/neuron/SIFT/img.pgm");
-    vigra::MultiArray<2, vigra::UInt8> vigra_img_array(vigra_img_info.shape());
-    vigra::importImage(vigra_img_info, vigra_img_array);
 
 
 #if _SHOWIMAGE
@@ -150,7 +145,6 @@ int sift_vigra(){
 #endif
 
 
-#if _OPENCV
     //
     cout << "Configure SIFT detector " << endl;
     vector<cv::KeyPoint> keypoints;
@@ -187,14 +181,7 @@ int sift_vigra(){
 #endif
     //
     cout << "Configure SIFT extractor " << endl;
-    vigra::VigraSiftDescriptor vigraSiftDescriptor;
-    vigraSiftDescriptor.setValues(
-            _nfeatures,
-            _nOctaveLayers,
-            _contrastThreshold,
-            _edgeThreshold,
-            _sigma
-    );
+
 
     cv::Mat descriptor;
     cv::Ptr<cv::xfeatures2d::SiftDescriptorExtractor> extractor =
@@ -217,11 +204,26 @@ int sift_vigra(){
     cout<<"\tDescriptor size:"<<descriptor.rows<<" x "<<descriptor.cols<<endl;
     cout<<"\tDescriptor: "<<descriptor.row(1)<<endl;
 
+    //////////////////////////////////////////////////////////////////// VIGRA
+    // read also with vigra
+    vigra::VigraSiftDescriptor vigraSiftDescriptor;
+    vigraSiftDescriptor.setValues(
+            _nfeatures,
+            _nOctaveLayers,
+            _contrastThreshold,
+            _edgeThreshold,
+            _sigma
+    );
+    vigraSiftDescriptor.allocateAndInitializeImage("/home/neuron/SIFT/img.pgm");
+    vigraSiftDescriptor.allocateDescriptorArray();
+
+
     //release memory
     detector.release();
     extractor.release();
     descriptor.release();
-#endif
+
+
 }
 #endif
 
