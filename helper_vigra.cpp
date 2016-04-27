@@ -43,4 +43,9 @@ namespace vigra{
         ));
         this->descriptor_array = vigra_array;
     }
+
+
+    void VigraSiftDescriptor::setKeypoints(std::vector<KeyPoint> key_points){
+        this->key_points = key_points;
+    }
 }

@@ -26,6 +26,20 @@
 
 using namespace std;
 
+std::vector<vigra::KeyPoint> getFakeKeypoints(std::vector<cv::KeyPoint> cvkps){
+    std::vector<vigra::KeyPoint> vigrakps;
+    for(auto const& value: cvkps) {
+        vigra::KeyPoint kp;
+        kp.ptx = value.pt.x;
+        kp.pty = value.pt.x;
+        kp.angle = value.angle;
+        kp.octave = value.octave;
+        kp.size = value.size;
+        kp.response = value.response;
+        vigrakps.push_back(kp);
+    }
+    return vigrakps;
+}
 
 #if _OPENCV
 int sift_opencv(){
@@ -217,6 +231,7 @@ int sift_vigra(){
     );
     vigraSiftDescriptor.allocateAndInitializeImage(_INPUT_FILE);
     vigraSiftDescriptor.allocateDescriptorArray();
+    vigraSiftDescriptor.setKeypoints(getFakeKeypoints(keypoints));
 
 
     //release memory
