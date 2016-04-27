@@ -22,4 +22,8 @@ namespace vigra{
         this->edgeThreshold = edgeThreshold;
         this->sigma = sigma;
     }
+
+    int VigraSiftDescriptor::getDescriptorSize() {
+        return DESCR_WIDTH*DESCR_WIDTH*DESCR_HIST_BINS;
+    }
 }

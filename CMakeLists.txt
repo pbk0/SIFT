@@ -7,6 +7,19 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES main.cpp helper_vigra.cpp helper_vigra.h)
 
+message(STATUS "Search Vigra ...")
+
+find_package( Vigra REQUIRED )
+
+if(Vigra_FOUND)
+
+    message(STATUS "Vigra_INCLUDE_DIRS: ${Vigra_INCLUDE_DIRS}")
+    message(STATUS "Vigra_LIBRARIES: .... vigraimpex")
+    message(STATUS "Vigra_VERSION: ${Vigra_VERSION}")
+
+    include_directories(${Vigra_INCLUDE_DIRS})
+
+endif()
 
 message(STATUS "Search OpenCV...")
 
@@ -51,8 +64,17 @@ endif(DOXYGEN_FOUND)
 
 add_executable(SIFT ${SOURCE_FILES} )
 
+
+
 if(OpenCV_FOUND)
 
     target_link_libraries(SIFT ${OpenCV_LIBRARIES})
+
+endif()
+
+
+if(Vigra_FOUND)
+
+    target_link_libraries(SIFT vigraimpex)
 
 endif()
