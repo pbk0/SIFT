@@ -5,6 +5,7 @@
 #define _VIGRA 1
 #define _OPENCV 1
 #define _SHOWIMAGE 0
+#define _INPUT_FILE "/home/neuron/SIFT/img.pgm"
 
 #if _VIGRA
 #include "helper_vigra.h"
@@ -37,7 +38,7 @@ int sift_opencv(){
     cout << "read the image" << endl;
 
     cv::Mat img;
-    img = cv::imread("/home/neuron/SIFT/img.pgm", CV_LOAD_IMAGE_GRAYSCALE);
+    img = cv::imread(_INPUT_FILE, CV_LOAD_IMAGE_GRAYSCALE);
     if(img.empty() )
     {
         cout << "Can't read one of the images..."<< endl;
@@ -129,7 +130,7 @@ int sift_vigra(){
     cout << "read the image" << endl;
 
     cv::Mat img;
-    img = cv::imread("/home/neuron/SIFT/img.pgm", CV_LOAD_IMAGE_GRAYSCALE);
+    img = cv::imread(_INPUT_FILE, CV_LOAD_IMAGE_GRAYSCALE);
     if(img.empty() )
     {
         cout << "Can't read one of the images..."<< endl;
@@ -214,7 +215,7 @@ int sift_vigra(){
             _edgeThreshold,
             _sigma
     );
-    vigraSiftDescriptor.allocateAndInitializeImage("/home/neuron/SIFT/img.pgm");
+    vigraSiftDescriptor.allocateAndInitializeImage(_INPUT_FILE);
     vigraSiftDescriptor.allocateDescriptorArray();
 
 
