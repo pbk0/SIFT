@@ -39,6 +39,7 @@ namespace vigra
         MultiArray<2, vigra::UInt8> image_array;
         MultiArray<2, vigra::UInt8> descriptor_array;
         std::vector<KeyPoint> key_points;
+        std::vector<MultiArray<2, vigra::UInt8>> gaussian_pyramid;
 
 
         // default width of descriptor histogram array
@@ -81,9 +82,9 @@ namespace vigra
         void setKeypoints(std::vector<KeyPoint> key_points);
 
         /**
-         *
+         * Build gaussian pyramid.
          */
-        void getWhatYouNeed();
+        void build_gauss_pyr();
 
 
     };

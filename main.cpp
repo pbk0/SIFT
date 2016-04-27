@@ -212,12 +212,13 @@ int sift_vigra(){
     cout << "Extract descriptors" << endl;
     extractor->compute(img, keypoints, descriptor);
 
+
     //
     cout << "Results ....." << endl;
-    cout<<"\tNumber of keypoints detected: "<<keypoints.size()<<endl;
-    cout<<"\tKeypoint 1 coordinates:"<<keypoints[1].pt<<" Keypoint 1 angle:"<<keypoints[1].angle<<" Keypoint 1 scale/octave:"<<keypoints[1].octave<<endl;
-    cout<<"\tDescriptor size:"<<descriptor.rows<<" x "<<descriptor.cols<<endl;
-    cout<<"\tDescriptor: "<<descriptor.row(1)<<endl;
+    cout << "\tNumber of keypoints detected: "<<keypoints.size()<<endl;
+    cout << "\tKeypoint 1 coordinates:"<<keypoints[1].pt<<" Keypoint 1 angle:"<<keypoints[1].angle<<" Keypoint 1 scale/octave:"<<keypoints[1].octave<<endl;
+    cout << "\tDescriptor size:"<<descriptor.rows<<" x "<<descriptor.cols<<endl;
+    cout << "\tDescriptor: "<<descriptor.row(1)<<endl;
 
     //////////////////////////////////////////////////////////////////// VIGRA
     // read also with vigra
@@ -232,6 +233,10 @@ int sift_vigra(){
     vigraSiftDescriptor.allocateAndInitializeImage(_INPUT_FILE);
     vigraSiftDescriptor.allocateDescriptorArray();
     vigraSiftDescriptor.setKeypoints(getFakeKeypoints(keypoints));
+    vigraSiftDescriptor.build_gauss_pyr();
+
+
+
 
 
     //release memory
