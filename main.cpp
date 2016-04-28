@@ -5,7 +5,7 @@
 #define _VIGRA 1
 #define _OPENCV 1
 #define _SHOWIMAGE 0
-#define _INPUT_FILE "/home/neuron/SIFT/img.pgm"
+#define _INPUT_FILE "/home/neuron/SIFT/Lenna.png"
 
 #if _VIGRA
 #include "helper_vigra.h"
@@ -68,7 +68,7 @@ int sift_opencv(){
     //
     cout << "Configure SIFT detector " << endl;
     vector<cv::KeyPoint> keypoints;
-    int _nfeatures = 1000;
+    int _nfeatures = 10;
     int _nOctaveLayers = 3;
     double _contrastThreshold = 0.04;
     double _edgeThreshold = 10;
@@ -163,7 +163,7 @@ int sift_vigra(){
     //
     cout << "Configure SIFT detector " << endl;
     vector<cv::KeyPoint> keypoints;
-    int _nfeatures = 1000;
+    int _nfeatures = 10;
     int _nOctaveLayers = 3;
     double _contrastThreshold = 0.04;
     double _edgeThreshold = 10;
@@ -218,7 +218,10 @@ int sift_vigra(){
     cout << "\tNumber of keypoints detected: "<<keypoints.size()<<endl;
     cout << "\tKeypoint 1 coordinates:"<<keypoints[1].pt<<" Keypoint 1 angle:"<<keypoints[1].angle<<" Keypoint 1 scale/octave:"<<keypoints[1].octave<<endl;
     cout << "\tDescriptor size:"<<descriptor.rows<<" x "<<descriptor.cols<<endl;
+    cout << "\tDescriptor: "<<descriptor.row(0)<<endl;
     cout << "\tDescriptor: "<<descriptor.row(1)<<endl;
+    cout << "\tDescriptor: "<<descriptor.row(2)<<endl;
+    cout << "\tDescriptor: "<<descriptor.row(3)<<endl;
 
     //////////////////////////////////////////////////////////////////// VIGRA
     // read also with vigra
@@ -234,8 +237,7 @@ int sift_vigra(){
     vigraSiftDescriptor.allocateDescriptorArray();
     vigraSiftDescriptor.setKeypoints(getFakeKeypoints(keypoints));
     vigraSiftDescriptor.build_gauss_pyr();
-
-
+    vigraSiftDescriptor.calculate_descriptors();
 
 
 

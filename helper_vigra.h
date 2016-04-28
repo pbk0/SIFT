@@ -48,6 +48,15 @@ namespace vigra
         // default number of bins per histogram in descriptor array
         static const int DESCR_HIST_BINS = 8;
 
+        // determines the size of a single descriptor orientation histogram
+        static constexpr float DESCR_SCL_FCTR = 3.f;
+
+        // threshold on magnitude of elements of descriptor vector
+        static constexpr float DESCR_MAG_THR = 0.2f;
+
+        // factor used to convert floating-point descriptor to unsigned char
+        static constexpr float INT_DESCR_FCTR = 512.f;
+
         public:
 
         /**
@@ -85,6 +94,24 @@ namespace vigra
          * Build gaussian pyramid.
          */
         void build_gauss_pyr();
+
+        /**
+         *
+         */
+        void calculate_descriptors_helper(
+                const MultiArray<2, vigra::UInt8> img,
+                float ptx,
+                float pty,
+                float ori,
+                float scl,
+                int d,
+                int n,
+                int i);
+
+        /**
+         * Calculate SIFT descriptors.
+         */
+        void calculate_descriptors();
 
 
     };
