@@ -98,7 +98,7 @@ namespace vigra
         /**
          *
          */
-        void calculate_descriptors_helper(
+        float* calculate_descriptors_helper(
                 const MultiArray<2, vigra::UInt8> img,
                 float ptx,
                 float pty,
@@ -111,7 +111,7 @@ namespace vigra
         /**
          * Calculate SIFT descriptors.
          */
-        void calculate_descriptors();
+        float* calculate_descriptors(int kpid);
 
 
     };

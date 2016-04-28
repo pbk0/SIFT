@@ -237,7 +237,52 @@ int sift_vigra(){
     vigraSiftDescriptor.allocateDescriptorArray();
     vigraSiftDescriptor.setKeypoints(getFakeKeypoints(keypoints));
     vigraSiftDescriptor.build_gauss_pyr();
-    vigraSiftDescriptor.calculate_descriptors();
+
+
+    float* ret;
+    std::cout << "\n\tDescriptor from vigra keypoint " << std::endl;
+    std::cout << "\n\tDescriptor 0" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(0);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 2" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(2);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 3" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(3);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 4" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(4);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 5" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(5);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 8" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(8);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 9" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(9);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
 
 
 

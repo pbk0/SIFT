@@ -143,7 +143,7 @@ namespace vigra{
         std::cout << "finished building gaussian pyramid ..." <<std::endl;
     }
 
-    void VigraSiftDescriptor::calculate_descriptors_helper(
+    float* VigraSiftDescriptor::calculate_descriptors_helper(
             const MultiArray<2, vigra::UInt8> img,
             float ptx,
             float pty,
@@ -209,7 +209,8 @@ namespace vigra{
                 }
             }
 
-        std::cout<<"pkpkpkpk vigra hack "<<k<<std::endl;
+        std::cout<<"pkpkpkpk vigra hack \t "<< k << " \t"<<cos_t<<" \t" <<sin_t <<" \t" << radius << " \t" << rows << " \t" << cols <<std::endl;
+
 
         len = k;
         cv::hal::fastAtan2(Y, X, Ori, len, true);
@@ -301,89 +302,60 @@ namespace vigra{
         }
         #endif
 
-        //MultiArray<2, vigra::UInt8> yy = this->descriptor_array;
-        //std::cout << "\n\tDescriptor from vigra keypoint 1" << std::endl;
-        for(int ii=0; ii<this->getDescriptorSize(); ii++){
-            this->descriptor_array[Shape2(i_, ii)] = (unsigned char)dst[ii];
-            //std::cout << (int)this->descriptor_array[Shape2(i_, ii)] << " ";
-            //std::cout << dst[ii] << " ";
-        }
-        //std::cout << std::endl;
+
+        return dst;
     }
 
-    void VigraSiftDescriptor::calculate_descriptors() {
+    float*  VigraSiftDescriptor::calculate_descriptors(int kpid) {
 
         int i = 0;
         std::cout << "calculation descriptors ..." <<std::endl;
 
-        for(auto const& kp: this->key_points) {
 
-            //std::cout << i << std::endl;
+        //std::cout << i << std::endl;
 
-            // get the octave details
-            int aa = kp.octave;
-            int bb = aa & 255;
-            int cc = bb>>8;
-            int dd = cc & 255;
-            int ee = -128 | dd;
-            int octave = kp.octave & 255;
-            int layer = (kp.octave >> 8) & 255;
-            octave = octave < 128 ? octave : (-128 | octave);
-            float scale =
-                    octave >= 0 ? 1.f/(1 << octave) : (float)(1 << -octave);
+        vigra::KeyPoint kp = this->key_points[kpid];
 
-            // get the image scale correctly
-            float size = kp.size*scale;
-            float ptx = kp.ptx*scale;
-            float pty = kp.pty*scale;
-            int gau_pyr_index = (octave+1)*(this->octaveLayers+3)+layer;
-            MultiArray<2, vigra::UInt8> &curr_img =
-                    this->gaussian_pyramid[gau_pyr_index];
+        // get the octave details
+        int aa = kp.octave;
+        int bb = aa & 255;
+        int cc = bb>>8;
+        int dd = cc & 255;
+        int ee = -128 | dd;
+        int octave = kp.octave & 255;
+        int layer = (kp.octave >> 8) & 255;
+        octave = octave < 128 ? octave : (-128 | octave);
+        float scale =
+                octave >= 0 ? 1.f/(1 << octave) : (float)(1 << -octave);
 
-            //std::cout << curr_img[Shape2(1,2)] << std::endl;
+        // get the image scale correctly
+        float size = kp.size*scale;
+        float ptx = kp.ptx*scale;
+        float pty = kp.pty*scale;
+        int gau_pyr_index = (octave)*(this->octaveLayers+3)+layer;
+        MultiArray<2, vigra::UInt8> &curr_img =
+                this->gaussian_pyramid[gau_pyr_index];
 
-            // get the angle
-            float angle = 360.f - kp.angle;
-            if(std::abs(angle - 360.f) < FLT_EPSILON)
-                angle = 0.f;
+        //std::cout << curr_img[Shape2(1,2)] << std::endl;
 
-            /////
+        // get the angle
+        float angle = 360.f - kp.angle;
+        if(std::abs(angle - 360.f) < FLT_EPSILON)
+            angle = 0.f;
 
-            int d = DESCR_WIDTH;
-            int n = DESCR_HIST_BINS;
+        /////
 
-            this->calculate_descriptors_helper(curr_img, ptx, pty, angle, size*0.5f, d, n, i);
+        int d = DESCR_WIDTH;
+        int n = DESCR_HIST_BINS;
 
+        float* ret_float = this->calculate_descriptors_helper(curr_img, ptx, pty, angle, size*0.5f, d, n, i);
 
-            i++;
-            //calcSIFTDescriptor(img, ptf, angle, size*0.5f, d, n, descriptors.ptr<float>((int)i));
-
+        return ret_float;
 
 
 
-        }
+        //calcSIFTDescriptor(img, ptf, angle, size*0.5f, d, n, descriptors.ptr<float>((int)i));
 
-        std::cout << "\n\tDescriptor from vigra keypoint " << std::endl;
-        std::cout << "\n\tDescriptor 0" << std::endl;
-        for(int ii=0; ii<this->getDescriptorSize(); ii++){
-            std::cout << (int)this->descriptor_array[Shape2(0, ii)] << " ";
-        }
-        std::cout << "\n\tDescriptor 1" << std::endl;
-        for(int ii=0; ii<this->getDescriptorSize(); ii++){
-            std::cout << (int)this->descriptor_array[Shape2(1, ii)] << " ";
-        }
-        std::cout << "\n\tDescriptor 2" << std::endl;
-        for(int ii=0; ii<this->getDescriptorSize(); ii++){
-            std::cout << (int)this->descriptor_array[Shape2(2, ii)] << " ";
-        }
-        std::cout << "\n\tDescriptor 3" << std::endl;
-        for(int ii=0; ii<this->getDescriptorSize(); ii++){
-            std::cout << (int)this->descriptor_array[Shape2(3, ii)] << " ";
-        }
-        std::cout << std::endl;
-
-
-        std::cout << "Finished calculating descriptors ..." <<std::endl;
     }
 
 
