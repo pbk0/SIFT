@@ -229,6 +229,19 @@ namespace vigra
          */
         bool interpolate_extremum(
                 int oc, int intv, int rIdx, int cIdx, vigra::KeyPoint & kp);
+
+
+        /**
+         * Computes a gradient orientation histogram at a specified pixel.
+         */
+        float calculate_orientation_hist(
+                MultiArray<2, UInt8> const & img, int rIdx, int cIdx,
+                int nbins, int radius, float sigma );
+
+        /**
+         * Gaussian smooths an orientation histogram.
+         */
+        void smooth_ori_hist();
     };
 
 }

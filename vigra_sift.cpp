@@ -674,24 +674,92 @@ namespace vigra{
             return false;
 
         // reject edge like features
-        if(is_too_edge_like(dog_pyr[ oc*(intervals+2)+intv ], rIdx+xr, cIdx+xc))
+        if(is_too_edge_like(
+                dog_pyr[ oc*(intervals+2)+intv ],
+                (int)std::round(rIdx+xr),
+                (int)std::round(cIdx+xc)))
             return false;
         else
         {
 
             //Assign keypoint
-            kp.ptx = ( rIdx + xr ) * pow( 2.0, oc );
-            kp.pty = ( cIdx + xc ) * pow( 2.0, oc );
-            kp.r = rIdx + xr;
-            kp.c = cIdx + xc;
+            kp.ptx = ( rIdx + xr ) * pow( 2.0f, oc );
+            kp.pty = ( cIdx + xc ) * pow( 2.0f, oc );
+            kp.r = (int)std::round(rIdx + xr);
+            kp.c = (int)std::round(cIdx + xc);
             kp.octave = oc ;
-            kp.intvl= std::round(intv+xi);
+            kp.intvl = (int)std::round(intv+xi);
             kp.size = 2 * sigma * pow( 2, (intv + xi)/intervals ) *
-                    pow( 2.0, oc);
+                    pow( 2.0f, oc);
             kp.response = std::abs(contr);
             kp.scale_octv = sigma * pow( 2, (intv + xi)/intervals );
         }
         return true;
     }
 
+
+    float VigraSiftDetector::calculate_orientation_hist(
+            MultiArray<2, UInt8> const & img, int rIdx, int cIdx, int nbins,
+            int radius, float sigma )
+    {
+        double PI2 = M_PI * 2.0f;
+        float mag, ori, w, exp_denom;
+        int bin, i, j;
+        exp_denom = 2.0f * sigma * sigma;
+
+        // Loop through neighbouring radius*radius window
+        // and build histogram
+        for( i = -radius; i <= radius; i++ ){
+            for( j = -radius; j <= radius; j++ ){
+
+                int x = rIdx + i;
+                int y = cIdx + j;
+                if(  x <= 0 || x > img.shape(0) || y <= 0 || y > img.shape(1) )
+                    continue;
+
+                //calculate magnitude, orientation, weight
+                float dx = img[Shape2(rIdx,cIdx+1)] - img[Shape2(rIdx,cIdx-1)];
+                float dy = img[Shape2(rIdx-1,cIdx)] - img[Shape2(rIdx+1,cIdx)];
+                mag = sqrt( dx*dx + dy*dy );
+                ori = atan2( dy, dx );
+                w = exp( -( i*i + j*j ) / exp_denom );
+
+                //update histogram
+                bin = (int)std::round( nbins * (ori+ M_PI) / PI2 );
+                bin = ( bin < nbins )? bin : 0;
+                hist(bin) += w * mag;
+
+            }
+        }
+
+        // Smooth histogram
+        for( j = 0; j < SIFT_ORI_SMOOTH_PASSES; j++ )
+            smooth_ori_hist();
+
+        //Determine dominant orientation
+        //float maxval=*std::max_element(hist.begin(),hist.end());
+        float max_val = -999999999999999;
+        for (int i = 0; i < hist.shape(0); i++){
+            if (max_val < hist[Shape1(i)]){
+                max_val=hist[Shape1(i)];
+            }
+        }
+
+        return max_val;
+    }
+
+    void VigraSiftDetector::smooth_ori_hist()
+    {
+        float prev, tmp, h0 = this->hist(0);
+        int i;
+        int nbins=SIFT_ORI_HIST_BINS;
+
+        prev = this->hist(nbins-1);
+        for( i = 0; i < nbins; i++ )
+        {
+            tmp = hist(i);
+            hist(i) = 0.25f * prev + 0.5f * hist(i) + 0.25f * ( ( i+1 == nbins )? h0 : hist(i+1) );
+            prev = tmp;
+        }
+    }
 }
