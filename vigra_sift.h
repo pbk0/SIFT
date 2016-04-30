@@ -13,6 +13,13 @@
 #include <vigra/edgedetection.hxx>
 #include <vigra/hdf5impex.hxx>
 #include <vigra/imageinfo.hxx>
+#include <vigra/basicgeometry.hxx>
+#include <vigra/resizeimage.hxx>
+#include <vigra/multi_math.hxx>
+#include <Eigen/Dense>
+#include <Eigen/LU>
+#include <vigra/linear_algebra.hxx>
+#include <vigra/matrix.hxx>
 
 #define PI 3.1415926535897932384626433832795
 
@@ -181,6 +188,16 @@ namespace vigra
         static constexpr float SIFT_ORI_PEAK_RATIO = 0.8;
 
         static constexpr float SIFT_FIXPT_SCALE = 48.0;
+
+    public:
+
+        VigraSiftDetector(int intervals, double sigma, double contr_thr, int curv_thr);
+        void setOctaves(int octaves);
+        void allocateAndInitializeImage(const char* file_name);
+        void build_gauss_pyr();
+        void build_dog_pyr();
+        void detect_extrema();
+        bool is_extremum( int oc, int intv, int rIdx, int cIdx );
 
     };
 

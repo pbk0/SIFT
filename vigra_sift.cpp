@@ -6,24 +6,13 @@
  */
 
 #include "vigra_sift.h"
-
-
-#include <iostream>
-#include <vigra/multi_array.hxx>
-#include <vigra/impex.hxx>
-#include <string.h>
-#include <algorithm>
-#include <math.h>
-#include <vector>
-#include <vigra/convolution.hxx>
-#include <vigra/basicgeometry.hxx>
-#include <vigra/resizeimage.hxx>
-#include <vigra/multi_math.hxx>
-#include <stdlib.h>
-#include <vigra/linear_algebra.hxx>
-#include <Eigen/Dense>
-#include <Eigen/LU>
-#include <fstream>
+//#include <iostream>
+//#include <string.h>
+//#include <algorithm>
+//#include <math.h>
+//#include <vector>
+//#include <stdlib.h>
+//#include <fstream>
 
 #define _OPENCV 1
 #if _OPENCV
@@ -39,6 +28,10 @@
 #include <opencv2/core/hal/hal.hpp>
 
 #endif
+
+using namespace vigra::multi_math;
+using Eigen::Matrix2cd;
+using namespace std;
 
 namespace vigra{
 
@@ -345,6 +338,144 @@ namespace vigra{
     }
 
 
+    /*Constructor -initialising SIFT parameters*/
+    VigraSiftDetector::VigraSiftDetector(int intervals=SIFT_INTVLS, double sigma=SIFT_SIGMA, double contr_thr=SIFT_CONTR_THR, int curv_thr=SIFT_CURV_THR){
+        this->intervals=intervals;
+        this->sigma=sigma;
+        this->contr_thr=contr_thr;
+        this->curv_thr=curv_thr;
+    }
 
+    /*sets Octaves*/
+    void VigraSiftDetector::setOctaves(int octaves){
+        this->octaves=octaves;
+    }
+
+    /**
+     *
+     */
+    void VigraSiftDetector::allocateAndInitializeImage(const char* file_name){
+
+        ImageImportInfo vigra_img_info(file_name);
+        MultiArray<2, vigra::UInt8> vigra_img_array(vigra_img_info.shape());
+        importImage(vigra_img_info, vigra_img_array);
+        this->src_img = vigra_img_array;
+    }
+
+    void VigraSiftDetector::build_gauss_pyr()
+    {
+
+        //Initializing scales for all intervals
+        double k = pow( 2.0, 1.0 / this->intervals );
+        double sig[intervals+3];
+
+        sig[0] = this->sigma;
+        for( int i = 1; i < intervals + 3; i++ )
+        {
+            double sig_prev = std::pow(k, (double)(i-1))*this->sigma;
+            double sig_total = sig_prev*k;
+            sig[i] = std::sqrt(sig_total*sig_total - sig_prev*sig_prev);
+        }
+
+        gauss_pyr.clear();
+
+        //Building scale space image pyramid
+        for(int o = 0; o < octaves; o++ )
+        {
+            for(int i = 0; i < intervals + 3 ; i++ )
+            {
+                if( o == 0  &&  i == 0 ){
+                    //Smooth base image
+                    MultiArray<2, UInt8> next(this->src_img.shape());
+                    gaussianSmoothing(this->src_img, next, sig[i]);
+                    gauss_pyr.push_back(next);
+
+                }
+                else if( i == 0 )
+                {
+                    //Beginning of next octave - Downsample
+                    double factor=0.5;
+                    MultiArray<2, UInt8> prev_oct_last=gauss_pyr[(o-1)*(intervals+3)+(intervals-1)];
+                    MultiArray<2, UInt8> nxt_octv_base((int)(factor*prev_oct_last.shape(0)), (int)(factor*prev_oct_last.shape(1)));
+                    vigra::resizeImageNoInterpolation(prev_oct_last, nxt_octv_base);
+                    gauss_pyr.push_back(nxt_octv_base);
+                }
+                else
+                {
+                    //Smooth base image
+                    MultiArray<2, UInt8> prev = gauss_pyr[o*(intervals+3)+(i-1)];
+                    MultiArray<2, UInt8> next(prev.shape());
+                    gaussianSmoothing(prev, next, sig[i]);
+                    gauss_pyr.push_back(next);
+
+                }
+
+            }//endfor_i
+
+        }//endfor_o
+
+    }
+
+    /**
+     *
+     */
+    void VigraSiftDetector::build_dog_pyr()
+    {
+        for(int o = 0; o < octaves; o++){
+            for(int i = 1; i < intervals + 3; i++){
+                MultiArray<2, UInt8> curr = gauss_pyr[ o*(intervals+3)+i ];
+                MultiArray<2, UInt8> prev = gauss_pyr[ o*(intervals+3)+(i -1) ];
+                MultiArray<2, vigra::UInt8> diff(curr.shape());
+                for(int row=0;row<curr.shape(0);row++) {
+                    for (int col = SIFT_IMG_BORDER;
+                         col < curr.shape(1); col++) {
+                        diff[Shape2(row, col)] =
+                                curr[Shape2(row, col)] - prev[Shape2(row, col)];
+                    }
+                }
+                dog_pyr.push_back(diff);
+            }
+        }
+
+    }
+
+    /**
+     *
+     */
+    bool VigraSiftDetector::is_extremum( int oc, int intv, int rIdx, int cIdx )
+    {
+
+        MultiArray<2, UInt8> curr = dog_pyr[ oc*(intervals+2)+intv ];
+        UInt8 val=curr[Shape2(rIdx,cIdx)];
+
+        int i, j, k;
+
+        /* check for maximum */
+        if( val > 0 )
+        {
+            for( i = -1; i <= 1; i++ )
+                for( j = -1; j <= 1; j++ )
+                    for( k = -1; k <= 1; k++ ){
+                        if( val < dog_pyr[ oc*(intervals+2)+intv+i ]
+                                  [Shape2(rIdx+j,cIdx+k)] )
+                            return false;
+                    }
+        }
+
+            /* check for minimum */
+        else
+        {
+            for( i = -1; i <= 1; i++ )
+                for( j = -1; j <= 1; j++ )
+                    for( k = -1; k <= 1; k++ ){
+                        if( val >
+                                dog_pyr[ oc*(intervals+2)+intv+i ]
+                                  [Shape2(rIdx+j,cIdx+k)] )
+                            return false;
+                    }
+        }
+
+        return true;
+    }
 
 }
