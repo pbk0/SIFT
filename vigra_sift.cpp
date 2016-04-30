@@ -5,7 +5,7 @@
  *
  */
 
-#include "helper_vigra.h"
+#include "vigra_sift.h"
 
 
 #define _OPENCV 1

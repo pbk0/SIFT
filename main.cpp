@@ -15,7 +15,7 @@
 
 
 #if _VIGRA
-#include "helper_vigra.h"
+#include "vigra_sift.h"
 #endif
 
 #if _OPENCV
