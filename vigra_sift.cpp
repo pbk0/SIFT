@@ -339,11 +339,14 @@ namespace vigra{
 
 
     /*Constructor -initialising SIFT parameters*/
-    VigraSiftDetector::VigraSiftDetector(int intervals=SIFT_INTVLS, double sigma=SIFT_SIGMA, double contr_thr=SIFT_CONTR_THR, int curv_thr=SIFT_CURV_THR){
+    VigraSiftDetector::VigraSiftDetector(
+            int intervals=SIFT_INTVLS, float sigma=SIFT_SIGMA,
+            float contr_thr=SIFT_CONTR_THR, int curv_thr=SIFT_CURV_THR){
         this->intervals=intervals;
         this->sigma=sigma;
         this->contr_thr=contr_thr;
         this->curv_thr=curv_thr;
+        this->hist(SIFT_ORI_HIST_BINS);
     }
 
     /*sets Octaves*/
@@ -366,14 +369,14 @@ namespace vigra{
     {
 
         //Initializing scales for all intervals
-        double k = pow( 2.0, 1.0 / this->intervals );
-        double sig[intervals+3];
+        float k = pow( 2.0f, 1.0f / this->intervals );
+        float sig[intervals+3];
 
         sig[0] = this->sigma;
         for( int i = 1; i < intervals + 3; i++ )
         {
-            double sig_prev = std::pow(k, (double)(i-1))*this->sigma;
-            double sig_total = sig_prev*k;
+            float sig_prev = std::pow(k, (float)(i-1))*this->sigma;
+            float sig_total = sig_prev*k;
             sig[i] = std::sqrt(sig_total*sig_total - sig_prev*sig_prev);
         }
 
@@ -475,6 +478,219 @@ namespace vigra{
                     }
         }
 
+        return true;
+    }
+
+    Eigen::Vector3d VigraSiftDetector::compute_pderivative(
+            int oc, int intv, int rIdx, int cIdx  )
+    {
+        const float img_scale = 1.0f/(255*SIFT_FIXPT_SCALE);
+        const float deriv_scale = img_scale*0.5f;
+
+        MultiArray<2, UInt8> curr = dog_pyr[ oc*(intervals+2)+intv ];
+        MultiArray<2, UInt8> next = dog_pyr[ oc*(intervals+2)+intv+1 ];
+        MultiArray<2, UInt8> prev = dog_pyr[ oc*(intervals+2)+intv-1 ];
+        UInt8 val=curr[Shape2(rIdx,cIdx)];
+
+        double dx, dy, ds;
+
+        dx = ( curr[Shape2(rIdx,cIdx+1)] - curr[Shape2(rIdx,cIdx-1)] )
+             *deriv_scale;
+        dy = ( curr[Shape2(rIdx+1,cIdx)] - curr[Shape2(rIdx-1,cIdx)] )
+             *deriv_scale;
+        ds = ( next[Shape2(rIdx,cIdx)] - prev[Shape2(rIdx,cIdx)])*deriv_scale;
+
+        Eigen::Vector3d pderivative(dx,dy,ds);
+
+        return pderivative;
+
+    }
+
+    Eigen::Matrix3d VigraSiftDetector::compute_hessian(
+            int oc, int intv, int rIdx, int cIdx  ){
+
+        float img_scale = 1.0f/(255*SIFT_FIXPT_SCALE);
+        float deriv_scale = img_scale*0.5f;
+        float second_deriv_scale = img_scale;
+        float cross_deriv_scale = img_scale*0.25f;
+
+        float val, dxx, dyy, dss, dxy, dxs, dys;
+        MultiArray<2, UInt8> curr = dog_pyr[ oc*(intervals+2)+intv ];
+        MultiArray<2, UInt8> next = dog_pyr[ oc*(intervals+2)+intv+1 ];
+        MultiArray<2, UInt8> prev = dog_pyr[ oc*(intervals+2)+intv-1 ];
+
+        val=curr[Shape2(rIdx,cIdx)];
+
+        dxx = ( curr[Shape2(rIdx,cIdx+1)] + curr[Shape2(rIdx,cIdx-1)] - 2 * val )*second_deriv_scale;
+        dyy = ( curr[Shape2(rIdx+1,cIdx)] + curr[Shape2(rIdx-1,cIdx)] - 2 * val )*second_deriv_scale;
+        dss = ( next[Shape2(rIdx,cIdx)] + prev[Shape2(rIdx,cIdx)] - 2 * val )*second_deriv_scale;
+        dxy = ( curr[Shape2(rIdx+1,cIdx+1)] -
+                curr[Shape2(rIdx+1,cIdx-1)] -
+                curr[Shape2(rIdx-1,cIdx+1)] +
+                curr[Shape2(rIdx-1,cIdx-1)] ) *cross_deriv_scale;
+        dxs = ( next[Shape2(rIdx,cIdx+1)] -
+                next[Shape2(rIdx,cIdx-1)] -
+                prev[Shape2(rIdx,cIdx+1)] +
+                prev[Shape2(rIdx,cIdx-1)] ) *cross_deriv_scale;
+        dys = ( next[Shape2(rIdx+1,cIdx)] -
+                next[Shape2(rIdx-1,cIdx)] -
+                prev[Shape2(rIdx+1,cIdx)] +
+                prev[Shape2(rIdx-1,cIdx)] ) *cross_deriv_scale;
+
+        Eigen::Matrix3d hess(3,3);
+        hess(0,0)=dxx;
+        hess(0,1)=dxy;
+        hess(0,2)=dxs;
+        hess(1,0)=dxy;
+        hess(1,1)=dyy;
+        hess(1,2)=dys;
+        hess(2,0)=dxs;
+        hess(2,1)=dys;
+        hess(2,2)=dss;
+
+        return hess;
+
+    }
+
+    void VigraSiftDetector::interpolate_step(
+            int oc, int intv, int rIdx, int cIdx, float & xi, float & xr,
+            float & xc )
+    {
+        Eigen::Vector3d derv=compute_pderivative(oc,intv,rIdx,cIdx);
+        Eigen::Matrix3d hess=compute_hessian(oc,intv,rIdx,cIdx);
+
+        Eigen::Matrix3d hess_inv;
+        Eigen::Vector3d res;
+
+        bool invertible;
+        hess.computeInverseWithCheck(hess_inv,invertible);
+        if(invertible){
+            res= hess_inv * derv;
+
+            xi = -res(2);
+            xr = -res(1);
+            xc = -res(0);
+        }
+        else{
+            xi = -1;
+            xr = -1;
+            xc = -1;
+        }
+
+    }
+
+    float VigraSiftDetector::interpolate_contr(
+            int oc, int intv, int rIdx, int cIdx, float xi,
+            float xr, float xc)
+    {
+        const float img_scale = 1.0f/(255*SIFT_FIXPT_SCALE);
+        Eigen::Vector3d derv=compute_pderivative(oc,intv,rIdx,cIdx);
+        Eigen::Vector3d X(xc,xr,xi);
+        double res = X.transpose()*derv;
+
+        MultiArray<2, UInt8> curr=dog_pyr[ oc*(intervals+2)+intv ];
+
+        return (float)(curr[Shape2(rIdx,cIdx)]*img_scale + res * 0.5f);
+
+    }
+
+
+
+    int VigraSiftDetector::is_too_edge_like(
+            MultiArray<2, UInt8> const & dog_img, int rIdx, int cIdx )
+    {
+        float img_scale = 1.0f/(255*SIFT_FIXPT_SCALE);
+        float second_deriv_scale = img_scale;
+        float cross_deriv_scale = img_scale*0.25f;
+
+        float d, dxx, dyy, dxy, tr, det;
+
+        /* principal curvatures are computed using the trace
+         * and det of Hessian */
+        d = dog_img[Shape2(rIdx, cIdx)];
+        dxx = (dog_img[Shape2(rIdx, cIdx+1)] +
+                dog_img[Shape2(rIdx, cIdx-1)] - 2 * d)*second_deriv_scale;
+        dyy = (dog_img[Shape2(rIdx+1, cIdx)] +
+                dog_img[Shape2(rIdx-1, cIdx)] - 2 * d)*second_deriv_scale;
+        dxy = ( dog_img[Shape2(rIdx+1, cIdx+1)] -
+                dog_img[Shape2(rIdx+1, cIdx-1)] -
+                dog_img[Shape2(rIdx-1, cIdx+1)] +
+                dog_img[Shape2(rIdx-1, cIdx-1)] ) *cross_deriv_scale;
+        tr = dxx + dyy;
+        det = dxx * dyy - dxy * dxy;
+
+        /* negative determinant -> curvatures have different signs;
+         * reject feature */
+        if( det <= 0 )
+            return 1;
+
+        if( tr * tr / det < ( curv_thr + 1.0 )*( curv_thr + 1.0 ) / curv_thr )
+            return 0;
+
+        return 1;
+    }
+
+    bool VigraSiftDetector::interpolate_extremum(
+            int oc, int intv, int rIdx, int cIdx, vigra::KeyPoint & kp)
+    {
+        float xi, xr, xc, contr;
+        int i = 0;
+
+        while( i < SIFT_MAX_INTERP_STEPS )
+        {
+            interpolate_step( oc, intv, rIdx, cIdx, xi, xr, xc );
+            if( abs( xi ) < 0.5  &&  abs( xr ) < 0.5  &&  abs( xc ) < 0.5 )
+                break;
+
+            if( std::abs(xi) > (float)(INT_MAX/3) ||
+                std::abs(xr) > (float)(INT_MAX/3) ||
+                std::abs(xc) > (float)(INT_MAX/3) )
+                return false;
+
+            cIdx += std::round( xc );
+            rIdx += std::round( xr );
+            intv += std::round( xi );
+
+            if( intv < 1  ||
+                intv > intervals  ||
+                cIdx < SIFT_IMG_BORDER  ||
+                rIdx < SIFT_IMG_BORDER  ||
+                cIdx >= dog_pyr[oc].shape(1) - SIFT_IMG_BORDER  ||
+                rIdx >= dog_pyr[oc].shape(0) - SIFT_IMG_BORDER )
+            {
+                return false;
+            }
+
+            i++;
+        }
+
+        /* ensure convergence of interpolation */
+        if( i >= SIFT_MAX_INTERP_STEPS or ( xi == -1 && xr == -1 && xc == -1 ) )
+            return false;
+
+        // interpolate contrast
+        contr = interpolate_contr( oc, intv, rIdx, cIdx, xi, xr, xc );
+        if( abs( contr ) < contr_thr / intervals )
+            return false;
+
+        // reject edge like features
+        if(is_too_edge_like(dog_pyr[ oc*(intervals+2)+intv ], rIdx+xr, cIdx+xc))
+            return false;
+        else
+        {
+
+            //Assign keypoint
+            kp.ptx = ( rIdx + xr ) * pow( 2.0, oc );
+            kp.pty = ( cIdx + xc ) * pow( 2.0, oc );
+            kp.r = rIdx + xr;
+            kp.c = cIdx + xc;
+            kp.octave = oc ;
+            kp.intvl= std::round(intv+xi);
+            kp.size = 2 * sigma * pow( 2, (intv + xi)/intervals ) *
+                    pow( 2.0, oc);
+            kp.response = std::abs(contr);
+            kp.scale_octv = sigma * pow( 2, (intv + xi)/intervals );
+        }
         return true;
     }
 

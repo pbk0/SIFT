@@ -143,13 +143,13 @@ namespace vigra
         MultiArray<2, UInt8> src_img;
         int octaves;
         int intervals;
-        double sigma;
-        double contr_thr;
-        double curv_thr;
+        float sigma;
+        float contr_thr;
+        float curv_thr;
         std::vector<MultiArray<2, UInt8> > gauss_pyr;
         std::vector<MultiArray<2, UInt8> > dog_pyr;
         std::vector<vigra::KeyPoint> keypoints;
-        MultiArray<1, double> hist;
+        MultiArray<1, float> hist;
 
         // default number of sampled intervals per octave
         static const int SIFT_INTVLS = 3;
@@ -179,7 +179,7 @@ namespace vigra
         static constexpr float SIFT_ORI_SIG_FCTR = 1.5;
 
         /* determines the radius of the region used in orientation assignment */
-        static constexpr double SIFT_ORI_RADIUS = 3.0 * SIFT_ORI_SIG_FCTR;
+        static constexpr float SIFT_ORI_RADIUS = 3.0 * SIFT_ORI_SIG_FCTR;
 
         /* number of passes of orientation histogram smoothing */
         static const int SIFT_ORI_SMOOTH_PASSES = 2;
@@ -191,14 +191,44 @@ namespace vigra
 
     public:
 
-        VigraSiftDetector(int intervals, double sigma, double contr_thr, int curv_thr);
+        VigraSiftDetector(int intervals, float sigma, float contr_thr,
+                          int curv_thr);
         void setOctaves(int octaves);
         void allocateAndInitializeImage(const char* file_name);
         void build_gauss_pyr();
         void build_dog_pyr();
         void detect_extrema();
         bool is_extremum( int oc, int intv, int rIdx, int cIdx );
+        Eigen::Vector3d compute_pderivative( int oc, int intv, int rIdx,
+                                             int cIdx  );
+        Eigen::Matrix3d compute_hessian(
+                int oc, int intv, int rIdx, int cIdx  );
 
+        void interpolate_step(
+                int oc, int intv, int rIdx, int cIdx, float & xi, float & xr,
+                float & xc );
+        /**
+         * Calculates interpolated pixel contrast.
+         */
+        float interpolate_contr(
+                int oc, int intv, int rIdx, int cIdx, float xi,
+                float xr, float xc);
+
+
+        /**
+         * Determines whether a feature is too edge like to be stable by
+         * computing the ratio of principal curvatures at that feature.
+         */
+        int is_too_edge_like(
+                MultiArray<2, UInt8> const & dog_img, int rIdx, int cIdx );
+
+        /**
+         * Interpolates a scale-space extremum's location and scale to subpixel
+         * accuracy to form an image feature.
+         * Rejects features with low contrast.
+         */
+        bool interpolate_extremum(
+                int oc, int intv, int rIdx, int cIdx, vigra::KeyPoint & kp);
     };
 
 }
