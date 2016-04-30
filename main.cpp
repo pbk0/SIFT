@@ -4,8 +4,15 @@
 
 #define _VIGRA 1
 #define _OPENCV 1
-#define _SHOWIMAGE 0
+#define _SHOWIMAGE 1
 #define _INPUT_FILE "/home/neuron/SIFT/Lenna.png"
+#define _NFEATURES 1000
+#define _NOCTAVELAYERS 3
+#define _CONTRASTTHRES 0.04
+#define _EDGETHRES 10
+#define _SIGMA 1.6
+
+
 
 #if _VIGRA
 #include "helper_vigra.h"
@@ -68,11 +75,11 @@ int sift_opencv(){
     //
     cout << "Configure SIFT detector " << endl;
     vector<cv::KeyPoint> keypoints;
-    int _nfeatures = 10;
-    int _nOctaveLayers = 3;
-    double _contrastThreshold = 0.04;
-    double _edgeThreshold = 10;
-    double _sigma = 1.6;
+    int _nfeatures = _NFEATURES;
+    int _nOctaveLayers = _NOCTAVELAYERS;
+    double _contrastThreshold = _CONTRASTTHRES;
+    double _edgeThreshold = _EDGETHRES;
+    double _sigma = _SIGMA;
     cv::Ptr<cv::xfeatures2d::SiftFeatureDetector> detector =
             cv::xfeatures2d::SiftFeatureDetector::create(
                     _nfeatures,
@@ -163,11 +170,11 @@ int sift_vigra(){
     //
     cout << "Configure SIFT detector " << endl;
     vector<cv::KeyPoint> keypoints;
-    int _nfeatures = 10;
-    int _nOctaveLayers = 3;
-    double _contrastThreshold = 0.04;
-    double _edgeThreshold = 10;
-    double _sigma = 1.6;
+    int _nfeatures = _NFEATURES;
+    int _nOctaveLayers = _NOCTAVELAYERS;
+    double _contrastThreshold = _CONTRASTTHRES;
+    double _edgeThreshold = _EDGETHRES;
+    double _sigma = _SIGMA;
     cv::Ptr<cv::xfeatures2d::SiftFeatureDetector> detector =
             cv::xfeatures2d::SiftFeatureDetector::create(
                     _nfeatures,
