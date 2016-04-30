@@ -33,7 +33,12 @@
 
 using namespace std;
 
-std::vector<vigra::KeyPoint> getFakeKeypoints(std::vector<cv::KeyPoint> cvkps){
+/**
+ * Conversion methods for keypoint. Helpful for plotting.
+ */
+std::vector<vigra::KeyPoint> convertKeyPointsCV2Vigra(
+        std::vector<cv::KeyPoint> cvkps
+){
     std::vector<vigra::KeyPoint> vigrakps;
     for(auto const& value: cvkps) {
         vigra::KeyPoint kp;
@@ -46,6 +51,26 @@ std::vector<vigra::KeyPoint> getFakeKeypoints(std::vector<cv::KeyPoint> cvkps){
         vigrakps.push_back(kp);
     }
     return vigrakps;
+}
+
+/**
+ * Conversion methods for keypoint. Helpful for plotting.
+ */
+std::vector<cv::KeyPoint> convertKeyPointsVigra2CV(
+        std::vector<vigra::KeyPoint> vigkps
+){
+    std::vector<cv::KeyPoint> cvkps;
+    for(auto const& value: vigkps) {
+        cv::KeyPoint kp;
+        kp.pt.x = value.ptx;
+        kp.pt.y = value.ptx;
+        kp.angle = value.angle;
+        kp.octave = value.octave;
+        kp.size = value.size;
+        kp.response = value.response;
+        cvkps.push_back(kp);
+    }
+    return cvkps;
 }
 
 #if _OPENCV
@@ -242,7 +267,7 @@ int sift_vigra(){
     );
     vigraSiftDescriptor.allocateAndInitializeImage(_INPUT_FILE);
     vigraSiftDescriptor.allocateDescriptorArray();
-    vigraSiftDescriptor.setKeypoints(getFakeKeypoints(keypoints));
+    vigraSiftDescriptor.setKeypoints(convertKeyPointsCV2Vigra(keypoints));
     vigraSiftDescriptor.build_gauss_pyr();
 
 
