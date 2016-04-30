@@ -19,6 +19,10 @@
 namespace vigra
 {
 
+    /**
+     * A Class that serves as structure for storing the keypoint related
+     * information.
+     */
     class KeyPoint
     {
     public:
@@ -31,6 +35,9 @@ namespace vigra
 
     };
 
+    /**
+     * Class for extracting descriptors for provided keypoint.
+     */
     class VigraSiftDescriptor
     {
         int features;
