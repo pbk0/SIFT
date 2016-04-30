@@ -21,6 +21,10 @@ if(Vigra_FOUND)
 
 endif()
 
+message(STATUS "Search Eigen ...")
+
+add_definitions(-I/usr/local/include/eigen3)
+
 message(STATUS "Search OpenCV...")
 
 find_package( OpenCV REQUIRED )

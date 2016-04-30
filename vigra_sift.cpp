@@ -8,6 +8,23 @@
 #include "vigra_sift.h"
 
 
+#include <iostream>
+#include <vigra/multi_array.hxx>
+#include <vigra/impex.hxx>
+#include <string.h>
+#include <algorithm>
+#include <math.h>
+#include <vector>
+#include <vigra/convolution.hxx>
+#include <vigra/basicgeometry.hxx>
+#include <vigra/resizeimage.hxx>
+#include <vigra/multi_math.hxx>
+#include <stdlib.h>
+#include <vigra/linear_algebra.hxx>
+#include <Eigen/Dense>
+#include <Eigen/LU>
+#include <fstream>
+
 #define _OPENCV 1
 #if _OPENCV
 #include <opencv2/highgui.hpp>

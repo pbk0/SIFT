@@ -32,6 +32,10 @@ namespace vigra
         float angle;
         float response;
         int octave;
+        int r;
+        int c;
+        int intvl;
+        float scale_octv;
 
     };
 
@@ -124,6 +128,61 @@ namespace vigra
 
     };
 
+    /**
+     * Class for extracting key points for provided image and building Gaussian
+     * Pyramid.
+     */
+    class VigraSiftDetector {
+        MultiArray<2, UInt8> src_img;
+        int octaves;
+        int intervals;
+        double sigma;
+        double contr_thr;
+        double curv_thr;
+        std::vector<MultiArray<2, UInt8> > gauss_pyr;
+        std::vector<MultiArray<2, UInt8> > dog_pyr;
+        std::vector<vigra::KeyPoint> keypoints;
+        MultiArray<1, double> hist;
+
+        // default number of sampled intervals per octave
+        static const int SIFT_INTVLS = 3;
+
+        // default sigma for initial gaussian smoothing
+        static constexpr float SIFT_SIGMA = 1.6;
+
+        /** default threshold on keypoint contrast |D(x)| */
+        static constexpr float SIFT_CONTR_THR = 0.04;
+
+        /** default threshold on keypoint ratio of principle curvatures */
+        static constexpr int SIFT_CURV_THR = 10;
+
+        /* assumed gaussian blur for input image */
+        static constexpr float SIFT_INIT_SIGMA = 0.5;
+
+        /* width of border in which to ignore keypoints */
+        static const int SIFT_IMG_BORDER = 5;
+
+        /* maximum steps of keypoint interpolation before failure */
+        static const int SIFT_MAX_INTERP_STEPS = 5;
+
+        /* default number of bins in histogram for orientation assignment */
+        static const int SIFT_ORI_HIST_BINS = 36;
+
+        /* determines gaussian sigma for orientation assignment */
+        static constexpr float SIFT_ORI_SIG_FCTR = 1.5;
+
+        /* determines the radius of the region used in orientation assignment */
+        static constexpr double SIFT_ORI_RADIUS = 3.0 * SIFT_ORI_SIG_FCTR;
+
+        /* number of passes of orientation histogram smoothing */
+        static const int SIFT_ORI_SMOOTH_PASSES = 2;
+
+        /* orientation magnitude relative to max that results in new feature */
+        static constexpr float SIFT_ORI_PEAK_RATIO = 0.8;
+
+        static constexpr float SIFT_FIXPT_SCALE = 48.0;
+
+    };
 
 }
 
