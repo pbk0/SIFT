@@ -159,7 +159,7 @@ namespace vigra{
         float bins_per_rad = DESCR_HIST_BINS / 360.f;
         float exp_scale = -1.f/(DESCR_WIDTH * DESCR_WIDTH * 0.5f);
         float hist_width = DESCR_SCL_FCTR * size;
-        int radius = cvRound(hist_width * 1.4142135623730951f * (DESCR_WIDTH + 1) * 0.5f);
+        int radius = (int)std::roundf(hist_width * 1.4142135623730951f * (DESCR_WIDTH + 1) * 0.5f);
         // Clip the radius to the diagonal of the image to avoid autobuffer too large exception
         radius = std::min(radius, (int) sqrt((double) img.shape(0)*img.shape(0) + img.shape(1)*img.shape(1)));
         cos_t /= hist_width;
