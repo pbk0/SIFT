@@ -1,5 +1,5 @@
 //
-// Created by neuron on 25.04.16.
+// Created by someone on 25.04.16.
 //
 
 #ifndef SIFT_HELPER_VIGRA_H
@@ -90,7 +90,7 @@ namespace vigra
         void allocateAndInitializeImage(const char*  file_name);
 
         /**
-         * Allocate and intialize descriptor array.
+         * Allocate and initialize descriptor array.
          */
         void allocateDescriptorArray();
 
