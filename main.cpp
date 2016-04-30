@@ -4,9 +4,9 @@
 
 #define _VIGRA 1
 #define _OPENCV 1
-#define _SHOWIMAGE 1
+#define _SHOWIMAGE 0
 #define _INPUT_FILE "/home/neuron/SIFT/Lenna.png"
-#define _NFEATURES 1000
+#define _NFEATURES 10
 #define _NOCTAVELAYERS 3
 #define _CONTRASTTHRES 0.04
 #define _EDGETHRES 10

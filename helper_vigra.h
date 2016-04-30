@@ -14,6 +14,8 @@
 #include <vigra/hdf5impex.hxx>
 #include <vigra/imageinfo.hxx>
 
+#define PI 3.1415926535897932384626433832795
+
 namespace vigra
 {
 
@@ -96,22 +98,21 @@ namespace vigra
         void build_gauss_pyr();
 
         /**
-         *
+         * Helper subroutine to calculate descriptors for given keypoint.
          */
         float* calculate_descriptors_helper(
                 const MultiArray<2, vigra::UInt8> img,
                 float ptx,
                 float pty,
-                float ori,
-                float scl,
-                int d,
-                int n,
-                int i);
+                float orientation,
+                float size);
 
         /**
-         * Calculate SIFT descriptors.
+         * Main method responsible for getting the correct image in which you
+         * want to extract features. Makes the call to helper routine which
+         * basically extracts the descriptors.
          */
-        float* calculate_descriptors(int kpid);
+        float* calculate_descriptors(int keypoint_id);
 
 
     };

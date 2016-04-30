@@ -147,58 +147,51 @@ namespace vigra{
             const MultiArray<2, vigra::UInt8> img,
             float ptx,
             float pty,
-            float ori,
-            float scl,
-            int d,
-            int n,
-            int i_
+            float orientation,
+            float size
     )
     {
+        int pt_x = (int)std::roundf(ptx);
+        int pt_y = (int)std::roundf(pty);
 
-        //std::cout<<"ffffffffffffffffff"<<std::endl;
-
-        //float* dst = (float*)this->descriptor_array[i_];
-        //std::cout<<"ffffffffffffffffff"<<std::endl;
-
-        cv::Point pt(cvRound(ptx), cvRound(pty));
-        float cos_t = cosf(ori*(float)(CV_PI/180));
-        float sin_t = sinf(ori*(float)(CV_PI/180));
-        float bins_per_rad = n / 360.f;
-        float exp_scale = -1.f/(d * d * 0.5f);
-        float hist_width = DESCR_SCL_FCTR * scl;
-        int radius = cvRound(hist_width * 1.4142135623730951f * (d + 1) * 0.5f);
+        float cos_t = cosf(orientation*(float)(PI/180));
+        float sin_t = sinf(orientation*(float)(PI/180));
+        float bins_per_rad = DESCR_HIST_BINS / 360.f;
+        float exp_scale = -1.f/(DESCR_WIDTH * DESCR_WIDTH * 0.5f);
+        float hist_width = DESCR_SCL_FCTR * size;
+        int radius = cvRound(hist_width * 1.4142135623730951f * (DESCR_WIDTH + 1) * 0.5f);
         // Clip the radius to the diagonal of the image to avoid autobuffer too large exception
         radius = std::min(radius, (int) sqrt((double) img.shape(0)*img.shape(0) + img.shape(1)*img.shape(1)));
         cos_t /= hist_width;
         sin_t /= hist_width;
 
-        int i, j, k, len = (radius*2+1)*(radius*2+1), histlen = (d+2)*(d+2)*(n+2);
+        int i, j, k, len = (radius*2+1)*(radius*2+1), histlen = (DESCR_WIDTH+2)*(DESCR_WIDTH+2)*(DESCR_HIST_BINS+2);
         int rows = (int)img.shape(1), cols = (int)img.shape(0);
 
         cv::AutoBuffer<float> buf(size_t(len*6 + histlen));
         float *X = buf, *Y = X + len, *Mag = Y, *Ori = Mag + len, *W = Ori + len;
         float *RBin = W + len, *CBin = RBin + len, *hist = CBin + len;
 
-        for( i = 0; i < d+2; i++ )
+        for( i = 0; i < DESCR_WIDTH+2; i++ )
         {
-            for( j = 0; j < d+2; j++ )
-                for( k = 0; k < n+2; k++ )
-                    hist[(i*(d+2) + j)*(n+2) + k] = 0.f;
+            for( j = 0; j < DESCR_WIDTH+2; j++ )
+                for( k = 0; k < DESCR_HIST_BINS+2; k++ )
+                    hist[(i*(DESCR_WIDTH+2) + j)*(DESCR_HIST_BINS+2) + k] = 0.f;
         }
 
         for( i = -radius, k = 0; i <= radius; i++ )
             for( j = -radius; j <= radius; j++ )
             {
-                // Calculate sample's histogram array coords rotated relative to ori.
+                // Calculate sample's histogram array coords rotated relative to orientation.
                 // Subtract 0.5 so samples that fall e.g. in the center of row 1 (i.e.
                 // r_rot = 1.5) have full weight placed in row 1 after interpolation.
                 float c_rot = j * cos_t - i * sin_t;
                 float r_rot = j * sin_t + i * cos_t;
-                float rbin = r_rot + d/2 - 0.5f;
-                float cbin = c_rot + d/2 - 0.5f;
-                int r = pt.y + i, c = pt.x + j;
+                float rbin = r_rot + DESCR_WIDTH/2 - 0.5f;
+                float cbin = c_rot + DESCR_WIDTH/2 - 0.5f;
+                int r = pt_y + i, c = pt_x + j;
 
-                if( rbin > -1 && rbin < d && cbin > -1 && cbin < d &&
+                if( rbin > -1 && rbin < DESCR_WIDTH && cbin > -1 && cbin < DESCR_WIDTH &&
                     r > 0 && r < rows - 1 && c > 0 && c < cols - 1 )
                 {
                     float dx = (float)(img[Shape2(r, c+1)] - img[Shape2(r, c-1)]);
@@ -220,7 +213,7 @@ namespace vigra{
         for( k = 0; k < len; k++ )
         {
             float rbin = RBin[k], cbin = CBin[k];
-            float obin = (Ori[k] - ori)*bins_per_rad;
+            float obin = (Ori[k] - orientation)*bins_per_rad;
             float mag = Mag[k]*W[k];
 
             int r0 = cvFloor( rbin );
@@ -231,9 +224,9 @@ namespace vigra{
             obin -= o0;
 
             if( o0 < 0 )
-                o0 += n;
-            if( o0 >= n )
-                o0 -= n;
+                o0 += DESCR_HIST_BINS;
+            if( o0 >= DESCR_HIST_BINS )
+                o0 -= DESCR_HIST_BINS;
 
             // histogram update using tri-linear interpolation
             float v_r1 = mag*rbin, v_r0 = mag - v_r1;
@@ -244,34 +237,34 @@ namespace vigra{
             float v_rco011 = v_rc01*obin, v_rco010 = v_rc01 - v_rco011;
             float v_rco001 = v_rc00*obin, v_rco000 = v_rc00 - v_rco001;
 
-            int idx = ((r0+1)*(d+2) + c0+1)*(n+2) + o0;
+            int idx = ((r0+1)*(DESCR_WIDTH+2) + c0+1)*(DESCR_HIST_BINS+2) + o0;
             hist[idx] += v_rco000;
             hist[idx+1] += v_rco001;
-            hist[idx+(n+2)] += v_rco010;
-            hist[idx+(n+3)] += v_rco011;
-            hist[idx+(d+2)*(n+2)] += v_rco100;
-            hist[idx+(d+2)*(n+2)+1] += v_rco101;
-            hist[idx+(d+3)*(n+2)] += v_rco110;
-            hist[idx+(d+3)*(n+2)+1] += v_rco111;
+            hist[idx+(DESCR_HIST_BINS+2)] += v_rco010;
+            hist[idx+(DESCR_HIST_BINS+3)] += v_rco011;
+            hist[idx+(DESCR_WIDTH+2)*(DESCR_HIST_BINS+2)] += v_rco100;
+            hist[idx+(DESCR_WIDTH+2)*(DESCR_HIST_BINS+2)+1] += v_rco101;
+            hist[idx+(DESCR_WIDTH+3)*(DESCR_HIST_BINS+2)] += v_rco110;
+            hist[idx+(DESCR_WIDTH+3)*(DESCR_HIST_BINS+2)+1] += v_rco111;
         }
 
-        // finalize histogram, since the orientation histograms are circular
+        // finalize histogram, since the orientationentation histograms are circular
         float* dst = new float[this->getDescriptorSize()];
-        for( i = 0; i < d; i++ )
-            for( j = 0; j < d; j++ )
+        for( i = 0; i < DESCR_WIDTH; i++ )
+            for( j = 0; j < DESCR_WIDTH; j++ )
             {
-                int idx = ((i+1)*(d+2) + (j+1))*(n+2);
-                hist[idx] += hist[idx+n];
-                hist[idx+1] += hist[idx+n+1];
-                for( k = 0; k < n; k++ )
-                    dst[(i*d + j)*n + k] = hist[idx+k];
+                int idx = ((i+1)*(DESCR_WIDTH+2) + (j+1))*(DESCR_HIST_BINS+2);
+                hist[idx] += hist[idx+DESCR_HIST_BINS];
+                hist[idx+1] += hist[idx+DESCR_HIST_BINS+1];
+                for( k = 0; k < DESCR_HIST_BINS; k++ )
+                    dst[(i*DESCR_WIDTH + j)*DESCR_HIST_BINS + k] = hist[idx+k];
             }
         // copy histogram to the descriptor,
         // apply hysteresis thresholding
         // and scale the result, so that it can be easily converted
         // to byte array
         float nrm2 = 0;
-        len = d*d*n;
+        len = DESCR_WIDTH*DESCR_WIDTH*DESCR_HIST_BINS;
         for( k = 0; k < len; k++ )
             nrm2 += dst[k]*dst[k];
         float thr = std::sqrt(nrm2)*DESCR_MAG_THR;
@@ -283,45 +276,23 @@ namespace vigra{
         }
         nrm2 = INT_DESCR_FCTR/std::max(std::sqrt(nrm2), FLT_EPSILON);
 
-        #if 1
         for( k = 0; k < len; k++ )
         {
-            dst[k] = cv::saturate_cast<uchar>(dst[k]*nrm2);
+            //dst[k] = cv::saturate_cast<uchar>(dst[k]*nrm2);
+            dst[k] = dst[k]*nrm2;
         }
-        #else
-        float nrm1 = 0;
-        for( k = 0; k < len; k++ )
-        {
-        dst[k] *= nrm2;
-        nrm1 += dst[k];
-        }
-        nrm1 = 1.f/std::max(nrm1, FLT_EPSILON);
-        for( k = 0; k < len; k++ )
-        {
-        dst[k] = std::sqrt(dst[k] * nrm1);//saturate_cast<uchar>(std::sqrt(dst[k] * nrm1)*SIFT_INT_DESCR_FCTR);
-        }
-        #endif
 
 
         return dst;
     }
 
-    float*  VigraSiftDescriptor::calculate_descriptors(int kpid) {
+    float*  VigraSiftDescriptor::calculate_descriptors(int keypoint_id) {
 
-        int i = 0;
         std::cout << "calculation descriptors ..." <<std::endl;
 
-
-        //std::cout << i << std::endl;
-
-        vigra::KeyPoint kp = this->key_points[kpid];
+        vigra::KeyPoint kp = this->key_points[keypoint_id];
 
         // get the octave details
-        int aa = kp.octave;
-        int bb = aa & 255;
-        int cc = bb>>8;
-        int dd = cc & 255;
-        int ee = -128 | dd;
         int octave = kp.octave & 255;
         int layer = (kp.octave >> 8) & 255;
         octave = octave < 128 ? octave : (-128 | octave);
@@ -345,10 +316,8 @@ namespace vigra{
 
         /////
 
-        int d = DESCR_WIDTH;
-        int n = DESCR_HIST_BINS;
 
-        float* ret_float = this->calculate_descriptors_helper(curr_img, ptx, pty, angle, size*0.5f, d, n, i);
+        float* ret_float = this->calculate_descriptors_helper(curr_img, ptx, pty, angle, size*0.5f);
 
         return ret_float;
 
