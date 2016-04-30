@@ -51,10 +51,10 @@ namespace vigra
         std::vector<MultiArray<2, vigra::UInt8>> gaussian_pyramid;
 
 
-        // default width of descriptor histogram array
+        // Width of descriptor histogram array
         static const int DESCR_WIDTH = 4;
 
-        // default number of bins per histogram in descriptor array
+        // Number of bins per histogram in descriptor array
         static const int DESCR_HIST_BINS = 8;
 
         // determines the size of a single descriptor orientation histogram
