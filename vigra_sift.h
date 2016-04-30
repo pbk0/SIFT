@@ -197,7 +197,6 @@ namespace vigra
         void allocateAndInitializeImage(const char* file_name);
         void build_gauss_pyr();
         void build_dog_pyr();
-        void detect_extrema();
         bool is_extremum( int oc, int intv, int rIdx, int cIdx );
         Eigen::Vector3d compute_pderivative( int oc, int intv, int rIdx,
                                              int cIdx  );
@@ -242,6 +241,16 @@ namespace vigra
          * Gaussian smooths an orientation histogram.
          */
         void smooth_ori_hist();
+
+        /**
+         * Detects extreme points from a neighbourhood.
+         */
+        void detect_extrema();
+
+        /**
+         * This method detects key points
+         */
+        std::vector<vigra::KeyPoint> detect_keypoints();
     };
 
 }

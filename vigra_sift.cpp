@@ -594,8 +594,6 @@ namespace vigra{
 
     }
 
-
-
     int VigraSiftDetector::is_too_edge_like(
             MultiArray<2, UInt8> const & dog_img, int rIdx, int cIdx )
     {
@@ -697,7 +695,6 @@ namespace vigra{
         return true;
     }
 
-
     float VigraSiftDetector::calculate_orientation_hist(
             MultiArray<2, UInt8> const & img, int rIdx, int cIdx, int nbins,
             int radius, float sigma )
@@ -739,9 +736,9 @@ namespace vigra{
         //Determine dominant orientation
         //float maxval=*std::max_element(hist.begin(),hist.end());
         float max_val = -999999999999999;
-        for (int i = 0; i < hist.shape(0); i++){
-            if (max_val < hist[Shape1(i)]){
-                max_val=hist[Shape1(i)];
+        for (int ii = 0; ii < hist.shape(0); ii++){
+            if (max_val < hist[Shape1(ii)]){
+                max_val=hist[Shape1(ii)];
             }
         }
 
@@ -758,8 +755,108 @@ namespace vigra{
         for( i = 0; i < nbins; i++ )
         {
             tmp = hist(i);
-            hist(i) = 0.25f * prev + 0.5f * hist(i) + 0.25f * ( ( i+1 == nbins )? h0 : hist(i+1) );
+            hist(i) = 0.25f * prev + 0.5f * hist(i) + 0.25f *
+            ( ( i+1 == nbins )? h0 : hist(i+1) );
             prev = tmp;
         }
     }
+
+
+    void VigraSiftDetector::detect_extrema()
+    {
+        float prelim_contr_thr =  0.5f * contr_thr / intervals *
+                255 * SIFT_FIXPT_SCALE;
+        vigra::KeyPoint kpt;
+
+        for(int o = 0; o < octaves; o++){
+            for(int i = 1; i < intervals ; i++){
+
+                MultiArray<2, UInt8> curr = dog_pyr[ o*(intervals+2)+i ];
+
+                std::cout<<"Octave: "<<o<<" , Interval: "<<i<<std::endl;
+
+                for(int row=SIFT_IMG_BORDER;
+                    row<curr.shape(0)-SIFT_IMG_BORDER;
+                    row++){
+                    for(int col=SIFT_IMG_BORDER;
+                        col<curr.shape(1)-SIFT_IMG_BORDER;
+                        col++)
+                    {
+
+                        if(abs(curr[Shape2(row,col)]) > prelim_contr_thr &&
+                                is_extremum(o,i,row,col))
+                        {
+                            //keypoint elimination
+                            if(interpolate_extremum(o,i,row,col,kpt)){
+
+                                //calculate orientation and add keypoint
+                                int nbins=SIFT_ORI_HIST_BINS;
+
+                                //calculate dominant orientation
+                                float max_mag =
+                                        calculate_orientation_hist(
+                                                curr,kpt.r,kpt.c,nbins,
+                                                (int)std::round(
+                                                        SIFT_ORI_RADIUS *
+                                                                kpt.scale_octv
+                                                ),(SIFT_ORI_SIG_FCTR *
+                                                        kpt.scale_octv));
+                                float mag_thresh =
+                                        (float)(max_mag * SIFT_ORI_PEAK_RATIO);
+
+                                //Detect dominant and secondary orientations
+                                // and add keypoints
+                                for( int j = 0; j < nbins; j++ )
+                                {
+                                    int l = j > 0 ? j - 1 : nbins - 1;
+                                    int r2 = j < nbins-1 ? j + 1 : 0;
+                                    double PI2 = M_PI * 2.0;
+
+                                    if( hist[j] > hist[l]  &&
+                                            hist[j] > hist[r2]  &&
+                                            hist[j] >= mag_thresh )
+                                    {
+                                        float bin =
+                                                j + 0.5f * (hist[l]-hist[r2]) /
+                                                            (hist[l] - 2*hist[j]
+                                                             + hist[r2]);
+                                        bin = bin < 0 ? nbins + bin :
+                                              bin >= nbins ? bin - nbins : bin;
+                                        kpt.angle=(float)((( PI2 * bin )
+                                                          / nbins ) -
+                                                  M_PI);
+                                        keypoints.push_back(kpt);
+                                    }
+                                }//endfor_j
+                            }//endif_interpolate_extremum
+                        }//endif_extremum
+                    }//endfor_col
+                }//endfor_row
+            }//endfor_i
+        }//endfor_o
+        int num_keypoints=(int)keypoints.size();
+        std::cout<<std::endl<<"Number of keypoints detected: "
+        <<num_keypoints<<std::endl;
+    }
+
+    std::vector<vigra::KeyPoint> VigraSiftDetector::detect_keypoints(){
+
+
+        int octv = log( std::min( src_img.shape(0), src_img.shape(1) ) )
+                   / log(2) - 2;
+        setOctaves(octv);
+        std::cout<<"Octaves: "<<octv<<std::endl;
+
+        build_gauss_pyr();
+        std::cout<<"Gaussian Pyramid built"<<std::endl;
+
+        build_dog_pyr();
+        std::cout<<"DOG Pyramid built"<<std::endl;
+
+        detect_extrema();
+        std::cout<<"Keypoints computed"<<std::endl;
+
+        return this->keypoints;
+    }
+
 }
