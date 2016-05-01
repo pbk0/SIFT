@@ -4,33 +4,9 @@
 /**
  *
  */
-#define _PK 1
 
 #include "vigra_sift.h"
-//#include <iostream>
-//#include <string.h>
-//#include <algorithm>
-//#include <math.h>
-//#include <vector>
-//#include <stdlib.h>
-//#include <fstream>
 
-#if _PK
-#define _OPENCV 1
-#if _OPENCV
-#include <opencv2/highgui.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/features2d/features2d.hpp>
-#include <opencv2/xfeatures2d.hpp>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/xfeatures2d/nonfree.hpp>
-#include <opencv2/core/hal/hal.hpp>
-
-#endif
-#endif
 
 using namespace vigra::multi_math;
 using Eigen::Matrix2cd;
@@ -38,7 +14,6 @@ using namespace std;
 
 namespace vigra{
 
-#if _PK
     void VigraSiftDescriptor::setValues(
             int features,
             int octaveLayers,
@@ -185,7 +160,7 @@ namespace vigra{
                 (DESCR_WIDTH+2)*(DESCR_WIDTH+2)*(DESCR_HIST_BINS+2);
         int rows = (int)img.shape(1), cols = (int)img.shape(0);
 
-        cv::AutoBuffer<float> buf(size_t(len*6 + histlen));
+        float *buf = new float[size_t(len*6 + histlen)];
         float *X = buf;
         float *Y = X + len;
         float *Mag = Y;
@@ -231,7 +206,8 @@ namespace vigra{
                 }
             }
 
-        std::cout<<"pkpkpkpk vigra hack \t "<< k << " \t"<<cos_t<<" \t" <<sin_t <<" \t" << radius << " \t" << rows << " \t" << cols <<std::endl;
+        std::cout<<"pkpkpkpk vigra hack \t "<< k << " \t"<<cos_t<<" \t" <<sin_t
+        <<" \t" << radius << " \t" << rows << " \t" << cols <<std::endl;
 
 
         len = k;
@@ -251,9 +227,10 @@ namespace vigra{
             float obin = (Ori[k] - orientation)*bins_per_rad;
             float mag = Mag[k]*W[k];
 
-            int r0 = cvFloor( rbin );
-            int c0 = cvFloor( cbin );
-            int o0 = cvFloor( obin );
+
+            int r0 = (int)floorf( rbin );
+            int c0 = (int)floorf( cbin );
+            int o0 = (int)floorf( obin );
             rbin -= r0;
             cbin -= c0;
             obin -= o0;
@@ -361,8 +338,6 @@ namespace vigra{
 
 
     }
-
-#endif
 
     /*Constructor -initialising SIFT parameters*/
     void VigraSiftDetector::setParameters(
