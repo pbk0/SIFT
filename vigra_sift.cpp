@@ -632,20 +632,22 @@ namespace vigra{
     bool VigraSiftDetector::interpolate_extremum(
             int oc, int intv, int rIdx, int cIdx, vigra::KeyPoint & kp)
     {
-        float xi=0.f, xr=0.f, xc=0.f, contr=0.f;
+        float xi=0.f, xr=0.f, xc=0.f;
         int i = 0;
 
         while( i < SIFT_MAX_INTERP_STEPS )
         {
-            if(!interpolate_step( oc, intv, rIdx, cIdx, xi, xr, xc ))
+            if(!interpolate_step( oc, intv, rIdx, cIdx, xi, xr, xc )){
                 return false;
+            }
             if( abs( xi ) < 0.5  &&  abs( xr ) < 0.5  &&  abs( xc ) < 0.5 )
                 break;
 
             if( std::abs(xi) > (float)(INT_MAX/3) ||
                 std::abs(xr) > (float)(INT_MAX/3) ||
-                std::abs(xc) > (float)(INT_MAX/3) )
+                std::abs(xc) > (float)(INT_MAX/3) ){
                 return false;
+            }
 
             cIdx += std::round( xc );
             rIdx += std::round( xr );
@@ -656,8 +658,7 @@ namespace vigra{
                 cIdx < SIFT_IMG_BORDER  ||
                 rIdx < SIFT_IMG_BORDER  ||
                 cIdx >= dog_pyr[oc].shape(1) - SIFT_IMG_BORDER  ||
-                rIdx >= dog_pyr[oc].shape(0) - SIFT_IMG_BORDER )
-            {
+                rIdx >= dog_pyr[oc].shape(0) - SIFT_IMG_BORDER ){
                 return false;
             }
 
@@ -665,20 +666,23 @@ namespace vigra{
         }
 
         /* ensure convergence of interpolation */
-        if( i >= SIFT_MAX_INTERP_STEPS )
+        if( i >= SIFT_MAX_INTERP_STEPS ){
             return false;
+        }
 
         // interpolate contrast
-        contr = interpolate_contr( oc, intv, rIdx, cIdx, xi, xr, xc );
-        if( abs( contr ) < contr_thr / intervals )
+        float contr = interpolate_contr( oc, intv, rIdx, cIdx, xi, xr, xc );
+        if( abs( contr ) < contr_thr / intervals ){
             return false;
+        }
 
         // reject edge like features
         if(is_too_edge_like(
                 dog_pyr[ oc*(intervals+2)+intv ],
                 (int)std::round(rIdx+xr),
-                (int)std::round(cIdx+xc)))
+                (int)std::round(cIdx+xc))){
             return false;
+        }
         else
         {
 
@@ -727,7 +731,6 @@ namespace vigra{
                 bin = (int)std::round( nbins * (ori+ M_PI) / PI2 );
                 bin = ( bin < nbins )? bin : 0;
                 hist_orientation[bin] += w * mag;
-
             }
         }
 
@@ -767,6 +770,7 @@ namespace vigra{
 
     void VigraSiftDetector::detect_extrema()
     {
+        int _cnt = 0;
         float prelim_contr_thr =  0.5f * contr_thr / intervals *
                 255 * SIFT_FIXPT_SCALE;
         vigra::KeyPoint kpt;
@@ -809,6 +813,7 @@ namespace vigra{
 
                                 //Detect dominant and secondary orientations
                                 // and add keypoints
+                                int cccccc = 0;
                                 for( int j = 0; j < nbins; j++ )
                                 {
                                     int l = j > 0 ? j - 1 : nbins - 1;
@@ -833,9 +838,16 @@ namespace vigra{
                                                           / nbins ) -
                                                   M_PI);
                                         keypoints.push_back(kpt);
+                                        cccccc++;
+                                        if(cccccc>3){
+                                            cout << "hhhhhh" << endl;
+                                        }
                                     }
                                 }//endfor_j
                             }//endif_interpolate_extremum
+                            else{
+                                _cnt++;
+                            }
                         }//endif_extremum
                     }//endfor_col
                 }//endfor_row
@@ -844,6 +856,7 @@ namespace vigra{
         int num_keypoints=(int)keypoints.size();
         std::cout<<std::endl<<"Number of keypoints detected: "
         <<num_keypoints<<std::endl;
+        std::cout << "rejected " << _cnt << std::endl;
     }
 
     std::vector<vigra::KeyPoint> VigraSiftDetector::detect_keypoints(){
