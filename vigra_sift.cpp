@@ -4,7 +4,7 @@
 /**
  *
  */
-#define _PK 0
+#define _PK 1
 
 #include "vigra_sift.h"
 //#include <iostream>
@@ -220,16 +220,15 @@ namespace vigra{
 
 
         len = k;
-        //cv::hal::fastAtan2(Y, X, Ori, len, true);
         for(int iii=0 ; iii<len ; iii++){
             Ori[iii] = float((std::atan2(Y[iii], X[iii])*180.0)/PI);
             if(Ori[iii] < 0){
                 Ori[iii] += 360;
             }
+            Mag[iii] = sqrt(X[iii]*X[iii] + Y[iii]*Y[iii]);
+            W[iii] = exp(W[iii]);
         }
 
-        cv::hal::magnitude32f(X, Y, Mag, len);
-        cv::hal::exp32f(W, W, len);
 
         for( k = 0; k < len; k++ )
         {

@@ -14,7 +14,7 @@
 #define _EDGETHRES 10
 #define _SIGMA 1.6
 
-#define _PK 0
+#define _PK 1
 
 
 #if _VIGRA
@@ -391,7 +391,7 @@ int main() {
 #endif
 #endif
 
-    sift_sb();
+    //sift_sb();
 
 
 
