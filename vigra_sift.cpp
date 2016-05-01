@@ -4,6 +4,7 @@
 /**
  *
  */
+#define _PK 0
 
 #include "vigra_sift.h"
 //#include <iostream>
@@ -14,6 +15,7 @@
 //#include <stdlib.h>
 //#include <fstream>
 
+#if _PK
 #define _OPENCV 1
 #if _OPENCV
 #include <opencv2/highgui.hpp>
@@ -28,6 +30,7 @@
 #include <opencv2/core/hal/hal.hpp>
 
 #endif
+#endif
 
 using namespace vigra::multi_math;
 using Eigen::Matrix2cd;
@@ -35,6 +38,7 @@ using namespace std;
 
 namespace vigra{
 
+#if _PK
     void VigraSiftDescriptor::setValues(
             int features,
             int octaveLayers,
@@ -344,6 +348,7 @@ namespace vigra{
 
     }
 
+#endif
 
     /*Constructor -initialising SIFT parameters*/
     void VigraSiftDetector::setParameters(
@@ -820,7 +825,6 @@ namespace vigra{
 
                                 //Detect dominant and secondary orientations
                                 // and add keypoints
-                                int cccccc = 0;
                                 for( int j = 0; j < nbins; j++ )
                                 {
                                     int l = j > 0 ? j - 1 : nbins - 1;
@@ -845,10 +849,6 @@ namespace vigra{
                                                           / nbins ) -
                                                   M_PI);
                                         keypoints.push_back(kpt);
-                                        cccccc++;
-                                        if(cccccc>3){
-                                            cout << "hhhhhh" << endl;
-                                        }
                                     }
                                 }//endfor_j
                             }//endif_interpolate_extremum

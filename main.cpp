@@ -14,6 +14,7 @@
 #define _EDGETHRES 10
 #define _SIGMA 1.6
 
+#define _PK 0
 
 
 #if _VIGRA
@@ -29,8 +30,10 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#if _PK
 #include <opencv2/xfeatures2d/nonfree.hpp>
 
+#endif
 #endif
 
 using namespace std;
@@ -75,6 +78,7 @@ std::vector<cv::KeyPoint> convertKeyPointsVigra2CV(
     return cvkps;
 }
 
+#if _PK
 #if _OPENCV
 int sift_opencv(){
 
@@ -164,8 +168,10 @@ int sift_opencv(){
 
 }
 #endif
+#endif
 
 
+#if _PK
 #if _VIGRA
 int sift_vigra(){
 
@@ -328,6 +334,7 @@ int sift_vigra(){
 
 }
 #endif
+#endif
 
 void sift_sb(){
 
@@ -374,14 +381,17 @@ void sift_sb(){
 
 int main() {
 
+
+#if _PK
 #if _OPENCV
     //sift_opencv();
 #endif
 #if _VIGRA
     sift_vigra();
 #endif
+#endif
 
-    //sift_sb();
+    sift_sb();
 
 
 
