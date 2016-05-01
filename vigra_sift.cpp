@@ -86,7 +86,9 @@ namespace vigra{
         //int firstOctave = -1;
         int firstOctave = 0;
         int octaves =
-                (int)(std::log((double)std::min(baseImg.shape(0), baseImg.shape(1)) / std::log(2.) - 2)) - firstOctave;
+                (int)(std::log((double)std::min(
+                        baseImg.shape(0),
+                        baseImg.shape(1)) / std::log(2.) - 2)) - firstOctave;
         int intervals = this->octaveLayers;
         double init_sigma = this->sigma;
 
@@ -118,7 +120,8 @@ namespace vigra{
                     //Downsample
                     double factor=0.5;
                     MultiArray<2, UInt8> prev_oct_last =
-                            this->gaussian_pyramid[(o-1)*(intervals+3)+(intervals-1)];
+                            this->gaussian_pyramid[
+                                    (o-1)*(intervals+3)+(intervals-1)];
                     MultiArray<2, UInt8> nxt_octv_base(
                             (int)(factor*prev_oct_last.shape(0)),
                             (int)(factor*prev_oct_last.shape(1))
@@ -148,12 +151,6 @@ namespace vigra{
 
         //return gauss_pyr;
         //this->gaussian_pyramid = gauss_pyr;
-        int i = 0;
-        for(auto const& img: this->gaussian_pyramid) {
-            //std::cout << "image " << i << std::endl;
-            //std::cout << (int)this->gaussian_pyramid[i][Shape2(1,2)] << std::endl;
-            i++;
-        }
         std::cout << "finished building gaussian pyramid ..." <<std::endl;
     }
 
@@ -173,18 +170,30 @@ namespace vigra{
         float bins_per_rad = DESCR_HIST_BINS / 360.f;
         float exp_scale = -1.f/(DESCR_WIDTH * DESCR_WIDTH * 0.5f);
         float hist_width = DESCR_SCL_FCTR * size;
-        int radius = (int)std::roundf(hist_width * 1.4142135623730951f * (DESCR_WIDTH + 1) * 0.5f);
-        // Clip the radius to the diagonal of the image to avoid autobuffer too large exception
-        radius = std::min(radius, (int) sqrt((double) img.shape(0)*img.shape(0) + img.shape(1)*img.shape(1)));
+        int radius =
+                (int)std::roundf(
+                        hist_width * 1.4142135623730951f *
+                                (DESCR_WIDTH + 1) * 0.5f);
+        // Clip the radius to the diagonal of the image to avoid
+        // autobuffer too large exception
+        radius = std::min(radius, (int) sqrt((double) img.shape(0)*img.shape(0)
+                                             + img.shape(1)*img.shape(1)));
         cos_t /= hist_width;
         sin_t /= hist_width;
 
-        int i, j, k, len = (radius*2+1)*(radius*2+1), histlen = (DESCR_WIDTH+2)*(DESCR_WIDTH+2)*(DESCR_HIST_BINS+2);
+        int i, j, k, len = (radius*2+1)*(radius*2+1), histlen =
+                (DESCR_WIDTH+2)*(DESCR_WIDTH+2)*(DESCR_HIST_BINS+2);
         int rows = (int)img.shape(1), cols = (int)img.shape(0);
 
         cv::AutoBuffer<float> buf(size_t(len*6 + histlen));
-        float *X = buf, *Y = X + len, *Mag = Y, *Ori = Mag + len, *W = Ori + len;
-        float *RBin = W + len, *CBin = RBin + len, *hist = CBin + len;
+        float *X = buf;
+        float *Y = X + len;
+        float *Mag = Y;
+        float *Ori = Mag + len;
+        float *W = Ori + len;
+        float *RBin = W + len;
+        float *CBin = RBin + len;
+        float *hist = CBin + len;
 
         for( i = 0; i < DESCR_WIDTH+2; i++ )
         {
@@ -196,20 +205,26 @@ namespace vigra{
         for( i = -radius, k = 0; i <= radius; i++ )
             for( j = -radius; j <= radius; j++ )
             {
-                // Calculate sample's histogram array coords rotated relative to orientation.
-                // Subtract 0.5 so samples that fall e.g. in the center of row 1 (i.e.
-                // r_rot = 1.5) have full weight placed in row 1 after interpolation.
+                // Calculate sample's histogram array
+                // coords rotated relative to orientation.
+                // Subtract 0.5 so samples that fall e.g.
+                // in the center of row 1 (i.e.
+                // r_rot = 1.5) have full weight placed in
+                // row 1 after interpolation.
                 float c_rot = j * cos_t - i * sin_t;
                 float r_rot = j * sin_t + i * cos_t;
                 float rbin = r_rot + DESCR_WIDTH/2 - 0.5f;
                 float cbin = c_rot + DESCR_WIDTH/2 - 0.5f;
                 int r = pt_y + i, c = pt_x + j;
 
-                if( rbin > -1 && rbin < DESCR_WIDTH && cbin > -1 && cbin < DESCR_WIDTH &&
+                if( rbin > -1 && rbin < DESCR_WIDTH
+                    && cbin > -1 && cbin < DESCR_WIDTH &&
                     r > 0 && r < rows - 1 && c > 0 && c < cols - 1 )
                 {
-                    float dx = (float)(img[Shape2(r, c+1)] - img[Shape2(r, c-1)]);
-                    float dy = (float)(img[Shape2(r-1, c)] - img[Shape2(r+1, c)]);
+                    float dx =
+                            (float)(img[Shape2(r, c+1)] - img[Shape2(r, c-1)]);
+                    float dy =
+                            (float)(img[Shape2(r-1, c)] - img[Shape2(r+1, c)]);
                     X[k] = dx; Y[k] = dy; RBin[k] = rbin; CBin[k] = cbin;
                     W[k] = (c_rot * c_rot + r_rot * r_rot)*exp_scale;
                     k++;
@@ -268,7 +283,8 @@ namespace vigra{
             hist[idx+(DESCR_WIDTH+3)*(DESCR_HIST_BINS+2)+1] += v_rco111;
         }
 
-        // finalize histogram, since the orientationentation histograms are circular
+        // finalize histogram, since the orientationentation
+        // histograms are circular
         float* dst = new float[this->getDescriptorSize()];
         for( i = 0; i < DESCR_WIDTH; i++ )
             for( j = 0; j < DESCR_WIDTH; j++ )
@@ -337,13 +353,12 @@ namespace vigra{
         /////
 
 
-        float* ret_float = this->calculate_descriptors_helper(curr_img, ptx, pty, angle, size*0.5f);
+        float* ret_float =
+                this->calculate_descriptors_helper(
+                        curr_img, ptx, pty, angle, size*0.5f);
 
         return ret_float;
 
-
-
-        //calcSIFTDescriptor(img, ptf, angle, size*0.5f, d, n, descriptors.ptr<float>((int)i));
 
     }
 
