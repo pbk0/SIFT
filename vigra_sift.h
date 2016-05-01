@@ -203,7 +203,7 @@ namespace vigra
         Eigen::Matrix3d compute_hessian(
                 int oc, int intv, int rIdx, int cIdx  );
 
-        void interpolate_step(
+        bool interpolate_step(
                 int oc, int intv, int rIdx, int cIdx, float & xi, float & xr,
                 float & xc );
         /**

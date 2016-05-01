@@ -553,7 +553,7 @@ namespace vigra{
 
     }
 
-    void VigraSiftDetector::interpolate_step(
+    bool VigraSiftDetector::interpolate_step(
             int oc, int intv, int rIdx, int cIdx, float & xi, float & xr,
             float & xc )
     {
@@ -571,11 +571,11 @@ namespace vigra{
             xi = -res(2);
             xr = -res(1);
             xc = -res(0);
+
+            return true;
         }
         else{
-            xi = -1;
-            xr = -1;
-            xc = -1;
+            return false;
         }
 
     }
@@ -632,12 +632,13 @@ namespace vigra{
     bool VigraSiftDetector::interpolate_extremum(
             int oc, int intv, int rIdx, int cIdx, vigra::KeyPoint & kp)
     {
-        float xi, xr, xc, contr;
+        float xi=0.f, xr=0.f, xc=0.f, contr=0.f;
         int i = 0;
 
         while( i < SIFT_MAX_INTERP_STEPS )
         {
-            interpolate_step( oc, intv, rIdx, cIdx, xi, xr, xc );
+            if(!interpolate_step( oc, intv, rIdx, cIdx, xi, xr, xc ))
+                return false;
             if( abs( xi ) < 0.5  &&  abs( xr ) < 0.5  &&  abs( xc ) < 0.5 )
                 break;
 
@@ -664,7 +665,7 @@ namespace vigra{
         }
 
         /* ensure convergence of interpolation */
-        if( i >= SIFT_MAX_INTERP_STEPS or ( xi == -1 && xr == -1 && xc == -1 ) )
+        if( i >= SIFT_MAX_INTERP_STEPS )
             return false;
 
         // interpolate contrast

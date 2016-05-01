@@ -7,6 +7,7 @@
 #define _SHOWIMAGE 0
 #define _INPUT_FILE "/home/neuron/SIFT/Lenna.png"
 #define _INPUT_FILE_SMALL "/home/neuron/SIFT/window.png"
+#define _INPUT_FILE_MAP "/home/neuron/SIFT/map.png"
 #define _NFEATURES 10
 #define _NOCTAVELAYERS 3
 #define _CONTRASTTHRES 0.04
@@ -44,7 +45,7 @@ std::vector<vigra::KeyPoint> convertKeyPointsCV2Vigra(
     for(auto const& value: cvkps) {
         vigra::KeyPoint kp;
         kp.ptx = value.pt.x;
-        kp.pty = value.pt.x;
+        kp.pty = value.pt.y;
         kp.angle = value.angle;
         kp.octave = value.octave;
         kp.size = value.size;
@@ -64,7 +65,7 @@ std::vector<cv::KeyPoint> convertKeyPointsVigra2CV(
     for(auto const& value: vigkps) {
         cv::KeyPoint kp;
         kp.pt.x = value.ptx;
-        kp.pt.y = value.ptx;
+        kp.pt.y = value.pty;
         kp.angle = value.angle;
         kp.octave = value.octave;
         kp.size = value.size;
@@ -344,7 +345,7 @@ void sift_sb(){
             _curv_thr);
 
     // load image
-    vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE_SMALL);
+    vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE_MAP);
 
     //
     std::vector<vigra::KeyPoint> vigkps =  vigraSiftDetector.detect_keypoints();
@@ -353,7 +354,7 @@ void sift_sb(){
     std::vector<cv::KeyPoint> cvkps = convertKeyPointsVigra2CV(vigkps);
 
     //
-    cv::Mat img_src=cv::imread(_INPUT_FILE_SMALL);
+    cv::Mat img_src=cv::imread(_INPUT_FILE_MAP);
 
     cv::Mat img_keypoints;
     cv::drawKeypoints(
@@ -366,6 +367,8 @@ void sift_sb(){
     //
     cv::imshow("Keypoints", img_keypoints);
     cv::waitKey(0);
+
+    cout << "sdfsdfsdfsd";
 }
 
 
