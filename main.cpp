@@ -378,10 +378,10 @@ int main() {
     //sift_opencv();
 #endif
 #if _VIGRA
-    //sift_vigra();
+    sift_vigra();
 #endif
 
-    sift_sb();
+    //sift_sb();
 
 
 

@@ -216,7 +216,14 @@ namespace vigra{
 
 
         len = k;
-        cv::hal::fastAtan2(Y, X, Ori, len, true);
+        //cv::hal::fastAtan2(Y, X, Ori, len, true);
+        for(int iii=0 ; iii<len ; iii++){
+            Ori[iii] = float((std::atan2(Y[iii], X[iii])*180.0)/PI);
+            if(Ori[iii] < 0){
+                Ori[iii] += 360;
+            }
+        }
+
         cv::hal::magnitude32f(X, Y, Mag, len);
         cv::hal::exp32f(W, W, len);
 
