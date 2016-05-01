@@ -28,10 +28,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#if _PK
-#include <opencv2/xfeatures2d/nonfree.hpp>
 
-#endif
 #endif
 
 using namespace std;
