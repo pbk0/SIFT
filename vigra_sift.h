@@ -149,7 +149,7 @@ namespace vigra
         std::vector<MultiArray<2, UInt8> > gauss_pyr;
         std::vector<MultiArray<2, UInt8> > dog_pyr;
         std::vector<vigra::KeyPoint> keypoints;
-        MultiArray<1, float> hist;
+        std::vector<float> hist_orientation;
 
         // default number of sampled intervals per octave
         static const int SIFT_INTVLS = 3;
@@ -191,7 +191,7 @@ namespace vigra
 
     public:
 
-        VigraSiftDetector(int intervals, float sigma, float contr_thr,
+        void setParameters(int intervals, float sigma, float contr_thr,
                           int curv_thr);
         void setOctaves(int octaves);
         void allocateAndInitializeImage(const char* file_name);

@@ -6,6 +6,7 @@
 #define _OPENCV 1
 #define _SHOWIMAGE 0
 #define _INPUT_FILE "/home/neuron/SIFT/Lenna.png"
+#define _INPUT_FILE_SMALL "/home/neuron/SIFT/window.png"
 #define _NFEATURES 10
 #define _NOCTAVELAYERS 3
 #define _CONTRASTTHRES 0.04
@@ -327,15 +328,57 @@ int sift_vigra(){
 }
 #endif
 
+void sift_sb(){
+
+    // set defaults
+    int _intervals = 3;
+    float _sigma = 1.6f;
+    float _contr_thr = 0.04f;
+    int _curv_thr = 10;
+    vigra::VigraSiftDetector vigraSiftDetector;
+
+    vigraSiftDetector.setParameters(
+            _intervals,
+            _sigma,
+            _contr_thr,
+            _curv_thr);
+
+    // load image
+    vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE_SMALL);
+
+    //
+    std::vector<vigra::KeyPoint> vigkps =  vigraSiftDetector.detect_keypoints();
+
+    // print output
+    std::vector<cv::KeyPoint> cvkps = convertKeyPointsVigra2CV(vigkps);
+
+    //
+    cv::Mat img_src=cv::imread(_INPUT_FILE_SMALL);
+
+    cv::Mat img_keypoints;
+    cv::drawKeypoints(
+            img_src,
+            cvkps,
+            img_keypoints,
+            cv::Scalar( 255, 255, 0 ),
+            cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS
+    );
+    //
+    cv::imshow("Keypoints", img_keypoints);
+    cv::waitKey(0);
+}
+
 
 int main() {
 
 #if _OPENCV
-    sift_opencv();
+    //sift_opencv();
 #endif
 #if _VIGRA
-    sift_vigra();
+    //sift_vigra();
 #endif
+
+    sift_sb();
 
 
 

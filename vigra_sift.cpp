@@ -339,14 +339,15 @@ namespace vigra{
 
 
     /*Constructor -initialising SIFT parameters*/
-    VigraSiftDetector::VigraSiftDetector(
+    void VigraSiftDetector::setParameters(
             int intervals=SIFT_INTVLS, float sigma=SIFT_SIGMA,
             float contr_thr=SIFT_CONTR_THR, int curv_thr=SIFT_CURV_THR){
         this->intervals=intervals;
         this->sigma=sigma;
         this->contr_thr=contr_thr;
         this->curv_thr=curv_thr;
-        this->hist(SIFT_ORI_HIST_BINS);
+
+        this->hist_orientation.resize(SIFT_ORI_HIST_BINS);
     }
 
     /*sets Octaves*/
@@ -724,7 +725,7 @@ namespace vigra{
                 //update histogram
                 bin = (int)std::round( nbins * (ori+ M_PI) / PI2 );
                 bin = ( bin < nbins )? bin : 0;
-                hist(bin) += w * mag;
+                hist_orientation[bin] += w * mag;
 
             }
         }
@@ -736,9 +737,9 @@ namespace vigra{
         //Determine dominant orientation
         //float maxval=*std::max_element(hist.begin(),hist.end());
         float max_val = -999999999999999;
-        for (int ii = 0; ii < hist.shape(0); ii++){
-            if (max_val < hist[Shape1(ii)]){
-                max_val=hist[Shape1(ii)];
+        for (int ii = 0; ii < hist_orientation.size(); ii++){
+            if (max_val < hist_orientation[(ii)]){
+                max_val=hist_orientation[(ii)];
             }
         }
 
@@ -747,16 +748,17 @@ namespace vigra{
 
     void VigraSiftDetector::smooth_ori_hist()
     {
-        float prev, tmp, h0 = this->hist(0);
+        float prev, tmp, h0 = this->hist_orientation[0];
         int i;
         int nbins=SIFT_ORI_HIST_BINS;
 
-        prev = this->hist(nbins-1);
+        prev = this->hist_orientation[(nbins-1)];
         for( i = 0; i < nbins; i++ )
         {
-            tmp = hist(i);
-            hist(i) = 0.25f * prev + 0.5f * hist(i) + 0.25f *
-            ( ( i+1 == nbins )? h0 : hist(i+1) );
+            tmp = hist_orientation[(i)];
+            hist_orientation[(i)] =
+                    0.25f * prev + 0.5f * hist_orientation[(i)] + 0.25f *
+            ( ( i+1 == nbins )? h0 : hist_orientation[(i+1)]);
             prev = tmp;
         }
     }
@@ -812,14 +814,18 @@ namespace vigra{
                                     int r2 = j < nbins-1 ? j + 1 : 0;
                                     double PI2 = M_PI * 2.0;
 
-                                    if( hist[j] > hist[l]  &&
-                                            hist[j] > hist[r2]  &&
-                                            hist[j] >= mag_thresh )
+                                    if( hist_orientation[j] >
+                                                hist_orientation[l]  &&
+                                            hist_orientation[j] >
+                                                    hist_orientation[r2]  &&
+                                            hist_orientation[j] >= mag_thresh )
                                     {
-                                        float bin =
-                                                j + 0.5f * (hist[l]-hist[r2]) /
-                                                            (hist[l] - 2*hist[j]
-                                                             + hist[r2]);
+                                        float bin = j + 0.5f *
+                                                        (hist_orientation[l]-
+                                                         hist_orientation[r2]) /
+                                                        (hist_orientation[l] -
+                                                         2*hist_orientation[j] +
+                                                         hist_orientation[r2]);
                                         bin = bin < 0 ? nbins + bin :
                                               bin >= nbins ? bin - nbins : bin;
                                         kpt.angle=(float)((( PI2 * bin )
@@ -843,7 +849,7 @@ namespace vigra{
 
 
         int octv = log( std::min( src_img.shape(0), src_img.shape(1) ) )
-                   / log(2) - 2;
+                   / log(2) - 3;
         setOctaves(octv);
         std::cout<<"Octaves: "<<octv<<std::endl;
 
