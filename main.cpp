@@ -443,8 +443,6 @@ int call_sift(){
     cout << "Allocate memory for descriptor array ..." << endl;
     vigraSiftDescriptor.allocateDescriptorArray();
     vigraSiftDescriptor.setKeypoints(vigkps);
-
-    cout << "Build Gaussian pyramid ..." << endl;
     vigraSiftDescriptor.build_gauss_pyr();
 
 
@@ -452,43 +450,43 @@ int call_sift(){
     cout << "--------------------------------------------------------" << endl;
     float* ret;
     std::cout << "\n\tDescriptor for some vigra keypoints ... " << std::endl;
-    std::cout << "\n\tDescriptor 0" << std::endl;
+    std::cout << "\n\tKeypoint 0" << std::endl;
     ret = vigraSiftDescriptor.calculate_descriptors(0);
     for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
         std::cout << (int)ret[ii] << " ";
     }
     std::cout << std::endl;
-    std::cout << "\n\tDescriptor 2" << std::endl;
+    std::cout << "\n\tKeypoint 2" << std::endl;
     ret = vigraSiftDescriptor.calculate_descriptors(2);
     for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
         std::cout << (int)ret[ii] << " ";
     }
     std::cout << std::endl;
-    std::cout << "\n\tDescriptor 3" << std::endl;
+    std::cout << "\n\tKeypoint 3" << std::endl;
     ret = vigraSiftDescriptor.calculate_descriptors(3);
     for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
         std::cout << (int)ret[ii] << " ";
     }
     std::cout << std::endl;
-    std::cout << "\n\tDescriptor 4" << std::endl;
+    std::cout << "\n\tKeypoint 4" << std::endl;
     ret = vigraSiftDescriptor.calculate_descriptors(4);
     for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
         std::cout << (int)ret[ii] << " ";
     }
     std::cout << std::endl;
-    std::cout << "\n\tDescriptor 5" << std::endl;
+    std::cout << "\n\tKeypoint 5" << std::endl;
     ret = vigraSiftDescriptor.calculate_descriptors(5);
     for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
         std::cout << (int)ret[ii] << " ";
     }
     std::cout << std::endl;
-    std::cout << "\n\tDescriptor 8" << std::endl;
+    std::cout << "\n\tKeypoint 8" << std::endl;
     ret = vigraSiftDescriptor.calculate_descriptors(8);
     for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
         std::cout << (int)ret[ii] << " ";
     }
     std::cout << std::endl;
-    std::cout << "\n\tDescriptor 9" << std::endl;
+    std::cout << "\n\tKeypoint 9" << std::endl;
     ret = vigraSiftDescriptor.calculate_descriptors(9);
     for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
         std::cout << (int)ret[ii] << " ";

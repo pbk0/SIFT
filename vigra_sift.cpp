@@ -55,7 +55,7 @@ namespace vigra{
 
     void VigraSiftDescriptor::build_gauss_pyr()
     {
-        std::cout << "build gaussian pyramid ..." <<std::endl;
+        //std::cout << "build gaussian pyramid ..." <<std::endl;
         ////// modded
         MultiArray<2, UInt8> const & baseImg =  this->image_array;
         //int firstOctave = -1;
@@ -126,7 +126,7 @@ namespace vigra{
 
         //return gauss_pyr;
         //this->gaussian_pyramid = gauss_pyr;
-        std::cout << "finished building gaussian pyramid ..." <<std::endl;
+        //std::cout << "finished building gaussian pyramid ..." <<std::endl;
     }
 
     float* VigraSiftDescriptor::calculate_descriptors_helper(
@@ -206,8 +206,14 @@ namespace vigra{
                 }
             }
 
-        std::cout<<"vigra debug log \t "<< k << " \t"<<cos_t<<" \t" <<sin_t
-        <<" \t" << radius << " \t" << rows << " \t" << cols <<std::endl;
+        std::cout<<"Descriptor debug log \n ";
+        std::cout<< "\t\tRadius of circle: " << radius << std::endl;
+        std::cout<< "\t\tPixels considered inside circle: " << k << std::endl;
+        std::cout<< "\t\tCosine of angle: " << cos_t << std::endl;
+        std::cout<< "\t\tSine of angle: " << sin_t << std::endl;
+        std::cout<< "\t\tNumber of rows: " << rows << std::endl;
+        std::cout<< "\t\tNumber of cols: " << cols << std::endl;
+        std::cout<< "\t\tDescriptor vector with 128 values: " << std::endl;
 
 
         len = k;
@@ -852,7 +858,7 @@ namespace vigra{
         int num_keypoints=(int)keypoints.size();
         std::cout<<std::endl<<"Number of keypoints detected: "
         <<num_keypoints<<std::endl;
-        std::cout << "rejected " << _cnt << std::endl;
+        std::cout << "Number of keypoints rejected " << _cnt << std::endl;
     }
 
     std::vector<vigra::KeyPoint> VigraSiftDetector::detect_keypoints(){
