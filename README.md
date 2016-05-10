@@ -70,7 +70,7 @@ sudo make install
 sudo apt-get install libopencv-dev
 ```
 
-#### Compile and run our code
+#### Compile and run the code
 
 + Configure
 ```bash
