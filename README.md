@@ -1,6 +1,8 @@
-# SIFT
+# SIFT implementation
 
-## Installation
+|[Project report download link]()|
+
+## Guide for compilation and running the code
 
 #### Clone the code with sub-module Vigra
 
