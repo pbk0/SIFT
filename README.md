@@ -4,14 +4,14 @@
 
 #### Clone the code with sub-module Vigra
 
-```bat
+```bash
 git clone https://github.com/praveenneuron/SIFT.git
 cd SIFT
 git submodule update --init --recursive
 ```
 OR
 
-```bat
+```bash
 git clone --recursive https://github.com/praveenneuron/SIFT.git
 cd SIFT
 git submodule init
@@ -23,7 +23,7 @@ git submodule update
 
 + Other dependencies
 
-```sh
+```bash
 sudo apt-get install libjpeg-dev
 sudo apt-get install libtiff4-dev
 sudo apt-get install libtiff5-dev
@@ -34,7 +34,7 @@ sudo apt-get install libfftw3-dev
 
 + Install Eigen
 
-```sh
+```bash
 hg clone https://bitbucket.org/eigen/eigen/
 cd eigen
 mkdir build
@@ -49,7 +49,7 @@ level to -O2 in the cmake configuration (this is best done in the
 cmake GUI that you get by calling ccmake . before invoking make).
 The -O3 level in that compiler is buggy and leads to crashes.
 
-```sh
+```bash
 # git submodule add https://github.com/praveenneuron/vigra.git
 cd vigra
 mkdir build
@@ -64,17 +64,35 @@ sudo make install
 
 + OpenCV (optional if you want to plot images)
 
-```sh
+```bash
 sudo apt-get install libopencv-dev
 ```
 
 #### Compile and run our code
 
++ Configure
 ```bash
 cd ~/SIFT
 mkdir build
 cd build
 cmake ..
+```
+
++ Compile code and generate documentation
+  + When you run make
+    + the html documents will be generated in folder `~/SIFT/html`
+    + the latex documents will be generated in folder `~/SIFT/latex`
+    + `SIFT` executable file will be generated in folder `~/SIFT/build`
+```bash
+cd build
 make
+```
+
+
+#### Run the code executable
+
+```bash
+cd build
 ./SIFT
 ```
+
