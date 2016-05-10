@@ -206,7 +206,7 @@ namespace vigra{
                 }
             }
 
-        std::cout<<"pkpkpkpk vigra hack \t "<< k << " \t"<<cos_t<<" \t" <<sin_t
+        std::cout<<"vigra debug log \t "<< k << " \t"<<cos_t<<" \t" <<sin_t
         <<" \t" << radius << " \t" << rows << " \t" << cols <<std::endl;
 
 
