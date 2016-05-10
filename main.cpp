@@ -74,6 +74,9 @@ std::vector<cv::KeyPoint> convertKeyPointsVigra2CV(
 }
 
 #if _OPENCV
+/**
+ * This is just for debugging and testing the opencv functionality.
+ */
 int sift_opencv(){
 
     cout << "_________________________________________" << endl;
@@ -165,7 +168,10 @@ int sift_opencv(){
 
 
 #if _VIGRA
-int sift_vigra(){
+/**
+ * This method is just to check descriptor part with vigra.
+ */
+int sift_vigra_descriptor(){
 
     cout << "_________________________________________" << endl;
     cout << "_________________________________________" << endl;
@@ -327,7 +333,10 @@ int sift_vigra(){
 }
 #endif
 
-void sift_sb(){
+/**
+ * This method is just to check keypoint detector part with vigra.
+ */
+void sift_vigra_detector(){
 
     // set defaults
     int _nOctaveLayers = 3;
@@ -369,6 +378,9 @@ void sift_sb(){
     cout << "sdfsdfsdfsd";
 }
 
+/**
+ * This is important method which calls both keypoint detection and extraction.
+ */
 int call_sift(){
 
     // set default parameters
@@ -487,17 +499,17 @@ int call_sift(){
 
 int main() {
 
-
-#if _OPENCV
+    // call the opencv debug code
     //sift_opencv();
-#endif
-#if _VIGRA
-    //sift_vigra();
-#endif
 
+    // call only keypoint detector part with vigra
+    //sift_vigra_detector
+
+    // call only desciptor part with vigra
+    //sift_vigra_descriptor();
+
+    // call both keypoint detector and descriptor code
     call_sift();
-
-
 
     return 0;
 }
