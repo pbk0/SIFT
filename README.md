@@ -1,6 +1,6 @@
 # SIFT implementation
 
-| :arrow_double_down: [Project report download link]() :arrow_double_down: |
+[:arrow_double_down: Project report download link :arrow_double_down:]()
 
 ## Guide for compilation and running the code
 
