@@ -330,17 +330,17 @@ int sift_vigra(){
 void sift_sb(){
 
     // set defaults
-    int _intervals = 3;
+    int _nOctaveLayers = 3;
     float _sigma = 1.6f;
-    float _contr_thr = 0.04f;
-    int _curv_thr = 10;
+    float _contrastThreshold = 0.04f;
+    int _edgeThreshold = 10;
     vigra::VigraSiftDetector vigraSiftDetector;
 
     vigraSiftDetector.setParameters(
-            _intervals,
+            _nOctaveLayers,
             _sigma,
-            _contr_thr,
-            _curv_thr);
+            _contrastThreshold,
+            _edgeThreshold);
 
     // load image
     vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE_MAP);
@@ -369,6 +369,121 @@ void sift_sb(){
     cout << "sdfsdfsdfsd";
 }
 
+int call_sift(){
+
+    // set default parameters
+    //int _nfeatures = _NFEATURES;
+    int _nOctaveLayers = _NOCTAVELAYERS;
+    float _contrastThreshold = _CONTRASTTHRES;
+    int _edgeThreshold = _EDGETHRES;
+    float _sigma = _SIGMA;
+
+    // set descriptor parameters
+    cout << "Setting parameters ..." << endl;
+    vigra::VigraSiftDetector vigraSiftDetector;
+    vigraSiftDetector.setParameters(
+            _nOctaveLayers,
+            _sigma,
+            _contrastThreshold,
+            _edgeThreshold);
+
+    // load image
+    cout << "Loading image ..." << endl;
+    vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE_MAP);
+
+    // get the keypoints
+    cout << "Detecting Keypoints ..." << endl;
+    std::vector<vigra::KeyPoint> vigkps =  vigraSiftDetector.detect_keypoints();
+
+
+#if _OPENCV
+    // print output with opencv
+    std::vector<cv::KeyPoint> cvkps = convertKeyPointsVigra2CV(vigkps);
+
+    //
+    cv::Mat img_src=cv::imread(_INPUT_FILE_MAP);
+
+    cv::Mat img_keypoints;
+    cv::drawKeypoints(
+            img_src,
+            cvkps,
+            img_keypoints,
+            cv::Scalar( 255, 255, 0 ),
+            cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS
+    );
+    //
+    cv::imshow("Keypoints", img_keypoints);
+    cv::waitKey(0);
+
+# endif
+    
+    // extract the descriptors
+    cout << "Setting Keypoint descriptors parameters..." << endl;
+    vigra::VigraSiftDescriptor vigraSiftDescriptor;
+    vigraSiftDescriptor.setValues(
+            (int) vigkps.size(),
+            _nOctaveLayers,
+            _contrastThreshold,
+            _edgeThreshold,
+            _sigma
+    );
+    vigraSiftDescriptor.allocateAndInitializeImage(_INPUT_FILE_MAP);
+    cout << "Allocate memory for descriptor array ..." << endl;
+    vigraSiftDescriptor.allocateDescriptorArray();
+    vigraSiftDescriptor.setKeypoints(vigkps);
+
+    cout << "Build Gaussian pyramid ..." << endl;
+    vigraSiftDescriptor.build_gauss_pyr();
+
+
+    cout << "Print Results ..." << endl;
+    cout << "--------------------------------------------------------" << endl;
+    float* ret;
+    std::cout << "\n\tDescriptor for some vigra keypoints ... " << std::endl;
+    std::cout << "\n\tDescriptor 0" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(0);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 2" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(2);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 3" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(3);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 4" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(4);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 5" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(5);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 8" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(8);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "\n\tDescriptor 9" << std::endl;
+    ret = vigraSiftDescriptor.calculate_descriptors(9);
+    for(int ii=0; ii<vigraSiftDescriptor.getDescriptorSize(); ii++){
+        std::cout << (int)ret[ii] << " ";
+    }
+    std::cout << std::endl;
+    
+}
 
 int main() {
 
@@ -377,10 +492,10 @@ int main() {
     //sift_opencv();
 #endif
 #if _VIGRA
-    sift_vigra();
+    //sift_vigra();
 #endif
 
-    //sift_sb();
+    call_sift();
 
 
 
