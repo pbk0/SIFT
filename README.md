@@ -2,7 +2,7 @@
 
 ## Installation
 
-#### Clone the code
+#### Clone the code with sub-module Vigra
 
 ```bat
 git clone https://github.com/praveenneuron/SIFT.git
@@ -30,6 +30,17 @@ sudo apt-get install libtiff5-dev
 sudo apt-get install libpng12-dev
 sudo apt-get install openexr
 sudo apt-get install libfftw3-dev
+```
+
++ Install Eigen
+
+```sh
+hg clone https://bitbucket.org/eigen/eigen/
+cd eigen
+mkdir build
+cmake ..
+make
+sudo make install
 ```
 + Compile and install Vigra submodules first
 
