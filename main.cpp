@@ -5,9 +5,11 @@
 #define _VIGRA 1
 #define _OPENCV 1
 #define _SHOWIMAGE 0
-#define _INPUT_FILE "/home/neuron/SIFT/Lenna.png"
-#define _INPUT_FILE_SMALL "/home/neuron/SIFT/window.png"
-#define _INPUT_FILE_MAP "/home/neuron/SIFT/map.png"
+//#define _INPUT_FILE "/home/neuron/SIFT/Lenna.png"
+#define _INPUT_FILE "/home/neuron/SIFT/normal_window.png"
+//#define _INPUT_FILE "/home/neuron/SIFT/rotated_window.png"
+//#define _INPUT_FILE "/home/neuron/SIFT/scaled_window.png"
+//#define _INPUT_FILE "/home/neuron/SIFT/map.png"
 #define _NFEATURES 10
 #define _NOCTAVELAYERS 3
 #define _CONTRASTTHRES 0.04
@@ -352,7 +354,7 @@ void sift_vigra_detector(){
             _edgeThreshold);
 
     // load image
-    vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE_MAP);
+    vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE);
 
     //
     std::vector<vigra::KeyPoint> vigkps =  vigraSiftDetector.detect_keypoints();
@@ -361,7 +363,7 @@ void sift_vigra_detector(){
     std::vector<cv::KeyPoint> cvkps = convertKeyPointsVigra2CV(vigkps);
 
     //
-    cv::Mat img_src=cv::imread(_INPUT_FILE_MAP);
+    cv::Mat img_src=cv::imread(_INPUT_FILE);
 
     cv::Mat img_keypoints;
     cv::drawKeypoints(
@@ -401,7 +403,7 @@ int call_sift(){
 
     // load image
     cout << "Loading image ..." << endl;
-    vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE_MAP);
+    vigraSiftDetector.allocateAndInitializeImage(_INPUT_FILE);
 
     // get the keypoints
     cout << "Detecting Keypoints ..." << endl;
@@ -413,7 +415,7 @@ int call_sift(){
     std::vector<cv::KeyPoint> cvkps = convertKeyPointsVigra2CV(vigkps);
 
     //
-    cv::Mat img_src=cv::imread(_INPUT_FILE_MAP);
+    cv::Mat img_src=cv::imread(_INPUT_FILE);
 
     cv::Mat img_keypoints;
     cv::drawKeypoints(
@@ -425,6 +427,7 @@ int call_sift(){
     );
     //
     cv::imshow("Keypoints", img_keypoints);
+    cv::imwrite("kp.png", img_keypoints);
     cv::waitKey(0);
 
 # endif
@@ -439,7 +442,7 @@ int call_sift(){
             _edgeThreshold,
             _sigma
     );
-    vigraSiftDescriptor.allocateAndInitializeImage(_INPUT_FILE_MAP);
+    vigraSiftDescriptor.allocateAndInitializeImage(_INPUT_FILE);
     cout << "Allocate memory for descriptor array ..." << endl;
     vigraSiftDescriptor.allocateDescriptorArray();
     vigraSiftDescriptor.setKeypoints(vigkps);
