@@ -1,0 +1,227 @@
+Setting parameters ...
+Loading image ...
+Detecting Keypoints ...
+Octaves: 5
+Gaussian Pyramid built
+DOG Pyramid built
+Octave: 0 , Interval: 1
+Octave: 0 , Interval: 2
+Octave: 1 , Interval: 1
+Octave: 1 , Interval: 2
+Octave: 2 , Interval: 1
+Octave: 2 , Interval: 2
+Octave: 3 , Interval: 1
+Octave: 3 , Interval: 2
+Octave: 4 , Interval: 1
+Octave: 4 , Interval: 2
+
+Number of keypoints detected: 6592
+Number of keypoints rejected 6753
+Keypoints computed
+Setting Keypoint descriptors parameters...
+Allocate memory for descriptor array ...
+Print Results ...
+--------------------------------------------------------
+
+	Descriptor for some vigra keypoints ... 
+
+	Keypoint 0
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 23
+		Pixels considered inside circle: 765
+		Cosine of angle: 0.150676
+		Sine of angle: 0.00642966
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+	Keypoint 2
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 24
+		Pixels considered inside circle: 1145
+		Cosine of angle: 0.147325
+		Sine of angle: 0.00179514
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+	Keypoint 3
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 24
+		Pixels considered inside circle: 1145
+		Cosine of angle: 0.147324
+		Sine of angle: 0.00179513
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 7 0 0 0 0 0 0 0 8 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 2 0 22 29 37 36 57 82 182 100 39 34 47 71 91 62 182 182 41 43 26 50 43 90 182 101 40 68 27 34 26 88 182 68 
+
+	Keypoint 4
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 24
+		Pixels considered inside circle: 1149
+		Cosine of angle: 0.147253
+		Sine of angle: 0.00179434
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 22 1 0 0 0 0 0 2 32 1 0 0 0 0 0 2 29 1 0 0 0 0 0 1 18 0 49 43 65 5 43 72 122 52 28 15 74 3 33 59 122 45 34 8 77 14 21 59 122 49 18 6 53 8 29 40 122 29 53 50 102 23 44 66 76 45 39 42 122 38 38 53 120 48 32 43 122 38 32 34 122 32 25 33 122 47 32 41 110 52 
+
+	Keypoint 5
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 21
+		Pixels considered inside circle: 937
+		Cosine of angle: 0.165335
+		Sine of angle: 0.00201996
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+32 29 41 1 28 43 72 29 16 8 54 2 20 35 107 25 20 5 56 9 13 31 107 29 12 4 41 7 17 25 88 18 41 41 81 18 39 52 61 37 31 34 107 37 29 42 99 39 26 41 107 31 25 28 107 25 24 26 100 44 26 26 100 36 15 8 94 16 16 10 50 18 16 8 107 9 19 10 59 16 13 14 107 9 11 16 71 13 12 14 103 10 13 15 52 15 18 27 62 31 22 21 37 19 29 22 71 26 32 15 33 26 17 35 89 25 19 31 39 24 12 23 63 10 14 14 24 13 
+
+	Keypoint 8
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 19
+		Pixels considered inside circle: 729
+		Cosine of angle: 0.184899
+		Sine of angle: 0.00784442
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+	Keypoint 9
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 19
+		Pixels considered inside circle: 729
+		Cosine of angle: 0.18505
+		Sine of angle: 0.00235658
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+Setting parameters ...
+Loading image ...
+Detecting Keypoints ...
+Octaves: 5
+Gaussian Pyramid built
+DOG Pyramid built
+Octave: 0 , Interval: 1
+Setting parameters ...
+Loading image ...
+Detecting Keypoints ...
+Octaves: 5
+Gaussian Pyramid built
+DOG Pyramid built
+Octave: 0 , Interval: 1
+Octave: 0 , Interval: 2
+Octave: 1 , Interval: 1
+Octave: 1 , Interval: 2
+Octave: 2 , Interval: 1
+Octave: 2 , Interval: 2
+Octave: 3 , Interval: 1
+Octave: 3 , Interval: 2
+Octave: 4 , Interval: 1
+Octave: 4 , Interval: 2
+
+Number of keypoints detected: 6592
+Number of keypoints rejected 6753
+Keypoints computed
+Setting Keypoint descriptors parameters...
+Allocate memory for descriptor array ...
+Print Results ...
+--------------------------------------------------------
+
+	Descriptor for some vigra keypoints ... 
+
+	Keypoint 0
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 23
+		Pixels considered inside circle: 765
+		Cosine of angle: 0.150676
+		Sine of angle: 0.00642966
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+	Keypoint 2
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 24
+		Pixels considered inside circle: 1145
+		Cosine of angle: 0.147325
+		Sine of angle: 0.00179514
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+	Keypoint 3
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 24
+		Pixels considered inside circle: 1145
+		Cosine of angle: 0.147324
+		Sine of angle: 0.00179513
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 7 0 0 0 0 0 0 0 8 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 2 0 22 29 37 36 57 82 182 100 39 34 47 71 91 62 182 182 41 43 26 50 43 90 182 101 40 68 27 34 26 88 182 68 
+
+	Keypoint 4
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 24
+		Pixels considered inside circle: 1149
+		Cosine of angle: 0.147253
+		Sine of angle: 0.00179434
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 22 1 0 0 0 0 0 2 32 1 0 0 0 0 0 2 29 1 0 0 0 0 0 1 18 0 49 43 65 5 43 72 122 52 28 15 74 3 33 59 122 45 34 8 77 14 21 59 122 49 18 6 53 8 29 40 122 29 53 50 102 23 44 66 76 45 39 42 122 38 38 53 120 48 32 43 122 38 32 34 122 32 25 33 122 47 32 41 110 52 
+
+	Keypoint 5
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 21
+		Pixels considered inside circle: 937
+		Cosine of angle: 0.165335
+		Sine of angle: 0.00201996
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+32 29 41 1 28 43 72 29 16 8 54 2 20 35 107 25 20 5 56 9 13 31 107 29 12 4 41 7 17 25 88 18 41 41 81 18 39 52 61 37 31 34 107 37 29 42 99 39 26 41 107 31 25 28 107 25 24 26 100 44 26 26 100 36 15 8 94 16 16 10 50 18 16 8 107 9 19 10 59 16 13 14 107 9 11 16 71 13 12 14 103 10 13 15 52 15 18 27 62 31 22 21 37 19 29 22 71 26 32 15 33 26 17 35 89 25 19 31 39 24 12 23 63 10 14 14 24 13 
+
+	Keypoint 8
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 19
+		Pixels considered inside circle: 729
+		Cosine of angle: 0.184899
+		Sine of angle: 0.00784442
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+
+	Keypoint 9
+calculation descriptors ...
+Descriptor debug log 
+ 		Radius of circle: 19
+		Pixels considered inside circle: 729
+		Cosine of angle: 0.18505
+		Sine of angle: 0.00235658
+		Number of rows: 400
+		Number of cols: 400
+		Descriptor vector with 128 values: 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
